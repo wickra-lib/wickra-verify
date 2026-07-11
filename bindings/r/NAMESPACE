@@ -1,0 +1,4 @@
+useDynLib(wickraverify, .registration = TRUE, .fixes = "C_")
+export(wkverify_version)
+export(wkverify_new)
+export(wkverify_command)

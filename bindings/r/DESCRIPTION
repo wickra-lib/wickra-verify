@@ -1,0 +1,17 @@
+Package: wickraverify
+Type: Package
+Title: Verify Any Backtest
+Version: 0.1.0
+Authors@R: person("kingchenc", role = c("aut", "cre"), email = "support@wickra.org")
+Description: R bindings for wickra-verify over its C ABI hub: create a Verifier,
+    recompute a claimed backtest report with the deterministic Wickra engine and
+    confirm or refute it field by field - the same protocol as the CLI and every
+    other binding.
+License: MIT + file LICENSE | Apache License 2.0
+URL: https://github.com/wickra-lib/wickra-verify
+BugReports: https://github.com/wickra-lib/wickra-verify/issues
+Encoding: UTF-8
+NeedsCompilation: yes
+SystemRequirements: the wickra-verify C ABI shared library (WKVERIFY_LIB) and its
+    header (WKVERIFY_INC).
+RoxygenNote: 7.3.2
