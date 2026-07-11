@@ -1,0 +1,47 @@
+[package]
+name = "wickra-verify-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+serde_json = "1"
+# The core under test, plus the engine used to synthesize honest claims.
+verify-core = { path = "../crates/verify-core" }
+wickra-backtest-core = { git = "https://github.com/wickra-lib/wickra-backtest", version = "0.1" }
+
+# Detach from the parent workspace — cargo-fuzz builds this crate on its own with
+# sanitizer flags on a nightly toolchain.
+[workspace]
+
+[[bin]]
+name = "claim_parse"
+path = "fuzz_targets/claim_parse.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "compare_reports"
+path = "fuzz_targets/compare_reports.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "canonicalize"
+path = "fuzz_targets/canonicalize.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "verify_roundtrip"
+path = "fuzz_targets/verify_roundtrip.rs"
+test = false
+doc = false
+bench = false
