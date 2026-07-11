@@ -22,5 +22,12 @@ thiserror.workspace = true
 # The canonical verdict/inputs hash (same canonicalization as wickra-proof).
 blake3.workspace = true
 
+[dev-dependencies]
+# Integration tests recompute honest reports with the real engine and drive
+# property tests over random universes.
+wickra-backtest-core.workspace = true
+serde_json.workspace = true
+proptest.workspace = true
+
 [lints]
 workspace = true
