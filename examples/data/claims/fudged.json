@@ -1,0 +1,17 @@
+{
+  "strategy": {
+    "symbol": "AAA",
+    "timeframe": "1h",
+    "indicators": {
+      "ema_fast": { "type": "Ema", "params": [3] },
+      "ema_slow": { "type": "Ema", "params": [8] }
+    },
+    "entry": { "cross_above": ["ema_fast", "ema_slow"] },
+    "exit": { "cross_below": ["ema_fast", "ema_slow"] },
+    "sizing": { "type": "fixed_fraction", "fraction": 0.95 },
+    "costs": { "taker_bps": 5, "slippage": { "type": "fixed_bps", "bps": 2 } },
+    "risk": {}
+  },
+  "dataset_ref": { "kind": "files", "symbols": ["AAA"] },
+  "claimed_report": { "fees_paid": 99999.0 }
+}
