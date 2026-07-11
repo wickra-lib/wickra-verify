@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Wickra.Verify.Example</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../bindings/csharp/WickraVerify/WickraVerify.csproj" />
+  </ItemGroup>
+
+  <!--
+    The DllImportResolver in the binding probes the Cargo target/ tree, so
+    `cargo build -p wickra-verify-c` is enough. This copies the native library
+    next to the example as a belt-and-suspenders fallback.
+  -->
+  <ItemGroup>
+    <Content Include="../../../target/release/wickra_verify.dll" Condition="Exists('../../../target/release/wickra_verify.dll')">
+      <Link>wickra_verify.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="../../../target/release/libwickra_verify.so" Condition="Exists('../../../target/release/libwickra_verify.so')">
+      <Link>libwickra_verify.so</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="../../../target/release/libwickra_verify.dylib" Condition="Exists('../../../target/release/libwickra_verify.dylib')">
+      <Link>libwickra_verify.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,20 @@
+[package]
+name = "wickra-verify-example"
+description = "A runnable Rust example for the Wickra verify core."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "verify"
+path = "src/main.rs"
+
+[dependencies]
+verify-core = { workspace = true }
+wickra-backtest-core = { workspace = true }
+serde_json = { workspace = true }

@@ -1,0 +1,10 @@
+{
+  "name": "wickra-verify-example-node",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A runnable Node.js example for Wickra verify.",
+  "license": "MIT OR Apache-2.0",
+  "dependencies": {
+    "wickra-verify": "file:../../bindings/node"
+  }
+}
