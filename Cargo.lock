@@ -510,6 +510,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "wickra-verify-c"
+version = "0.1.0"
+dependencies = [
+ "verify-core",
+]
+
+[[package]]
 name = "wickra-verify-cli"
 version = "0.1.0"
 dependencies = [
