@@ -1,0 +1,27 @@
+[package]
+name = "verify-bench"
+description = "Criterion benchmarks for the Wickra verify core: verify scaling by bar and indicator count, plus compare and canonicalize on small vs large reports."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+verify-core.workspace = true
+# Recompute honest reports with the real engine, so the benchmarked claim is a
+# genuine confirm (zero mismatches), not a synthetic shape.
+wickra-backtest-core.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+
+[[bench]]
+name = "verify"
+harness = false
