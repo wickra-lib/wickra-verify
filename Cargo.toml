@@ -19,6 +19,7 @@ members = [
     "crates/wickra-verify-cli",
     "bindings/c",
     "bindings/python",
+    "bindings/node",
 ]
 # The fuzz crate is its own (detached) workspace — cargo-fuzz builds it on a
 # nightly toolchain with sanitizer flags.
