@@ -1,0 +1,90 @@
+# Wickra Verify — workspace.
+# "Verify any backtest": given a claimed backtest report plus the strategy and
+# candle data it claims to come from, wickra-verify recomputes the report with
+# the pinned wickra-backtest engine and confirms or refutes the claim field by
+# field, deterministically. The core (`verify-core`) is exposed as a
+# JSON-over-C-ABI data API in ten languages, mirroring the Wickra tiering:
+# Rust core -> native Python/Node/WASM + a C ABI hub for C/C++/C#/Go/Java/R.
+# It is a free anti-fraud tool: CLI + bindings + an optional static WASM demo,
+# never a hosted service.
+#
+# The `members` list grows as crates are added, phase by phase; the final set is:
+#   crates/verify-core, crates/wickra-verify-cli, crates/verify-bench,
+#   bindings/c, bindings/python, bindings/node, bindings/wasm, examples/rust
+
+[workspace]
+resolver = "2"
+members = ["crates/verify-core", "crates/wickra-verify-cli", "crates/verify-bench", "bindings/c", "bindings/python", "bindings/node", "bindings/wasm", "examples/rust"]
+# The fuzz crate is its own (detached) workspace — cargo-fuzz builds it on a
+# nightly toolchain with sanitizer flags.
+exclude = ["fuzz"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.86"
+license = "MIT OR Apache-2.0"
+authors = ["wickra-lib"]
+repository = "https://github.com/wickra-lib/wickra-verify"
+homepage = "https://wickra.org"
+readme = "README.md"
+keywords = ["trading", "backtest", "verify", "determinism", "finance"]
+categories = ["finance", "command-line-utilities"]
+
+[workspace.dependencies]
+# The backtest engine is the runtime dependency: verify recomputes the claimed
+# report with it and compares. Consumed from git until its first crates.io
+# release (its tag is USER-GO gated); a `version` is pinned alongside `git` so it
+# is not a wildcard (cargo-deny bans.wildcards). Its version() is the
+# engine_version the verdict is bound to.
+wickra-backtest-core = { git = "https://github.com/wickra-lib/wickra-backtest", version = "0.1" }
+# Candle + CSV loading for the CLI's data input.
+wickra-data = "0.9"
+# Workspace-internal crate, referenced by the CLI, bench and bindings.
+verify-core = { version = "0.1.0", path = "crates/verify-core" }
+# Serialization — the data-driven boundary (claim/verdict/report/command as JSON).
+serde = { version = "1", features = ["derive"] }
+# `float_roundtrip` makes serde_json's float parser correctly rounded: a float
+# re-parses to the exact same f64 it was written from. Without it the parser can
+# land on an adjacent f64 for large magnitudes, which breaks canonicalization
+# idempotence (canonicalize -> parse -> canonicalize must be a fixed point) — the
+# determinism invariant a verdict shares with wickra-proof, checked by the
+# `canonicalize` fuzz target.
+serde_json = { version = "1", features = ["float_roundtrip"] }
+toml = "1.1"
+# Exact decimal arithmetic where price/qty precision matters.
+rust_decimal = { version = "1", features = ["serde"] }
+thiserror = "2"
+# The canonical verdict/inputs hash (same canonicalization as wickra-proof).
+blake3 = "1"
+clap = { version = "4", features = ["derive"] }
+# C ABI header generation.
+cbindgen = "0.27"
+# Test/dev.
+criterion = "0.8"
+proptest = "1"
+
+[workspace.lints.rust]
+# The core and all bindings are safe Rust; the C ABI hub re-allows unsafe
+# locally (it must call across the FFI boundary).
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+cast_precision_loss = "allow"
+cast_sign_loss = "allow"
+cast_possible_truncation = "allow"
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+must_use_candidate = "allow"
+too_many_lines = "allow"
+similar_names = "allow"
+
+[profile.release]
+# Panics must never unwind across the C ABI boundary: abort instead.
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

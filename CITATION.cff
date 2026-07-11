@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "wickra-verify"
+abstract: >-
+  Verify any backtest: given a claimed backtest report plus the strategy and
+  candle data it claims to come from, wickra-verify recomputes the report with
+  the deterministic Wickra backtest engine and confirms or refutes the claim
+  field by field, returning a byte-identical verdict anyone can reproduce in ten
+  languages. A free anti-fraud tool against doctored backtests. Exposed as a
+  JSON-over-C-ABI data API in ten languages.
+type: software
+authors:
+  - alias: kingchenc
+    website: "https://wickra.org"
+repository-code: "https://github.com/wickra-lib/wickra-verify"
+url: "https://wickra.org"
+license:
+  - MIT
+  - Apache-2.0
+keywords:
+  - trading
+  - backtest
+  - verify
+  - determinism
+  - reproducibility
+  - finance
