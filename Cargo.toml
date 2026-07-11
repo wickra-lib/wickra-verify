@@ -17,6 +17,7 @@ resolver = "2"
 members = [
     "crates/verify-core",
     "crates/wickra-verify-cli",
+    "crates/verify-bench",
     "bindings/c",
     "bindings/python",
     "bindings/node",
