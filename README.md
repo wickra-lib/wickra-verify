@@ -7,12 +7,20 @@
 [![CI](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/ci.svg)](https://github.com/wickra-lib/wickra-verify/actions/workflows/ci.yml)
 [![CodeQL](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/codeql.svg)](https://github.com/wickra-lib/wickra-verify/actions/workflows/codeql.yml)
 [![codecov](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/codecov.svg)](https://codecov.io/gh/wickra-lib/wickra-verify)
+[![GitHub release](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/release.svg)](https://github.com/wickra-lib/wickra-verify/releases/latest)
+[![crates.io](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/crates.svg)](https://crates.io/crates/wickra-verify-cli)
+[![PyPI](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/pypi.svg)](https://pypi.org/project/wickra-verify/)
+[![npm](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/npm.svg)](https://www.npmjs.com/package/wickra-verify)
+[![NuGet](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/nuget.svg)](https://www.nuget.org/packages/Wickra.Verify)
+[![Maven Central](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/maven.svg)](https://central.sonatype.com/artifact/org.wickra/wickra-verify)
+[![Go module](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/go.svg)](https://pkg.go.dev/github.com/wickra-lib/wickra-verify-go)
+[![R-universe](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/r-universe.svg)](https://wickra-lib.r-universe.dev)
 [![License: MIT OR Apache-2.0](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/license.svg)](#license)
 [![OpenSSF Scorecard](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/scorecard.svg)](https://scorecard.dev/viewer/?uri=github.com/wickra-lib/wickra-verify)
-[![OpenSSF Best Practices](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/best-practices.svg)](https://www.bestpractices.dev/)
+[![OpenSSF Best Practices](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/best-practices.svg)](https://www.bestpractices.dev)
 [![Build provenance](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/provenance.svg)](https://github.com/wickra-lib/wickra-verify/attestations)
-[![Verified across 10 languages](https://img.shields.io/badge/verified%20across-10%20languages-3b82f6)](#use-in-any-language)
 [![Docs](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/docs.svg)](https://wickra.org)
+[![Verified across 10 languages](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/verified.svg)](golden/)
 
 ---
 
@@ -230,3 +238,26 @@ profitability or future performance of any strategy, nor about whether the data
 itself is genuine. Trading carries risk; you are responsible for your own
 decisions. `wickra-verify` is free software you run yourself: no hosted service,
 no data collection, no warranty.
+
+---
+
+<p align="center">
+  <a href="https://github.com/wickra-lib/wickra-verify">
+    <img alt="GitHub stars" src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/stars.svg">
+  </a>
+  <a href="https://github.com/wickra-lib/wickra-verify/network/members">
+    <img alt="GitHub forks" src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/forks.svg">
+  </a>
+  <a href="https://github.com/wickra-lib/wickra-verify/issues">
+    <img alt="GitHub issues" src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/issues.svg">
+  </a>
+</p>
+
+<p align="center">
+  Built on <a href="https://github.com/wickra-lib/wickra">Wickra</a>. If it saved you time, the cheapest way to say thanks is to ⭐ the repo.
+</p>
+
+<p align="center">
+  <img alt="wickra-verify star history" width="640"
+       src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/star-history.svg">
+</p>
