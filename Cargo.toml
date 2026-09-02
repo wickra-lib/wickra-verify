@@ -48,7 +48,7 @@ categories = ["finance", "command-line-utilities"]
 # engine_version the verdict is bound to.
 wickra-backtest-core = { git = "https://github.com/wickra-lib/wickra-backtest", version = "0.1" }
 # Candle + CSV loading for the CLI's data input.
-wickra-data = "0.9"
+wickra-data = "1.0"
 # Workspace-internal crate, referenced by the CLI, bench and bindings.
 verify-core = { version = "0.1.0", path = "crates/verify-core" }
 # Serialization — the data-driven boundary (claim/verdict/report/command as JSON).

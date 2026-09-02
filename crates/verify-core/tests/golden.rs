@@ -3,6 +3,9 @@
 //! byte-for-byte identical to `golden/expected/*.json`. This is the Rust anchor
 //! of the cross-language determinism guarantee; the ten bindings assert the same
 //! bytes.
+//!
+//! A missing expected file is written (bless mode) so the corpus can be
+//! regenerated after an intended change; a present file is asserted byte-for-byte.
 
 use serde_json::{json, Value};
 use std::collections::BTreeMap;
@@ -72,12 +75,28 @@ fn golden_verdicts_are_byte_identical() {
         let cmd = json!({ "cmd": "verify", "claim": claim_value, "data": data_value }).to_string();
         let got = verifier.command_json(&cmd).unwrap();
 
-        let expected = fs::read_to_string(dir.join("expected").join(&name)).unwrap();
-        assert_eq!(
-            got.trim(),
-            expected.trim(),
-            "golden verdict mismatch for {name}"
-        );
+        // A missing expected file is written rather than asserted, so the corpus
+        // can be regenerated after an intended change by removing it and
+        // re-running. A present one is held to byte equality, which is what
+        // pins the ten bindings to the same output.
+        let expected_path = dir.join("expected").join(&name);
+        if expected_path.exists() {
+            let expected = fs::read_to_string(&expected_path).unwrap();
+            assert_eq!(
+                got.trim(),
+                expected.trim(),
+                "golden verdict mismatch for {name}"
+            );
+        } else {
+            fs::write(
+                &expected_path,
+                format!(
+                    "{got}
+"
+                ),
+            )
+            .unwrap();
+        }
 
         // The honest claim verifies; every doctored claim is refuted.
         let verdict: Value = serde_json::from_str(&got).unwrap();
