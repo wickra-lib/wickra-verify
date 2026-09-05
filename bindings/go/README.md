@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://wickra.org"><img src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/wickra-banner.webp?v=514" alt="Wickra Verify — deterministically confirm or refute a claimed backtest report against its strategy and data, in ten languages" width="100%"></a>
+</p>
+
 # Wickra Verify — Go
 
 Recompute a claimed backtest report with the deterministic Wickra engine and
