@@ -46,9 +46,18 @@ categories = ["finance", "command-line-utilities"]
 # release (its tag is USER-GO gated); a `version` is pinned alongside `git` so it
 # is not a wildcard (cargo-deny bans.wildcards). Its version() is the
 # engine_version the verdict is bound to.
-wickra-backtest-core = { git = "https://github.com/wickra-lib/wickra-backtest", version = "0.1" }
-# Candle + CSV loading for the CLI's data input.
-wickra-data = "0.9"
+#
+# Pinned to an exact rev, and the pin is shared. Cargo treats "this git URL,
+# default branch" and "this git URL at rev X" as two different sources, so a
+# consumer that pins the engine while this crate does not ends up with two
+# copies of wickra-backtest-core in one graph -- and two copies share no types.
+# Move this rev together with the consumers, not alone.
+#
+# wickra-data is deliberately absent. It was declared here and used by nothing:
+# the CLI reads its own CSV, and `Candle` comes from the engine, so adding the
+# dependency back would mean two crates defining the same row. wickra-proof and
+# wickra-strategy-ci reached the same conclusion.
+wickra-backtest-core = { git = "https://github.com/wickra-lib/wickra-backtest", rev = "d58e357506dbb95211d2313eae7bae93d1f73777", version = "0.1" }
 # Workspace-internal crate, referenced by the CLI, bench and bindings.
 verify-core = { version = "0.1.0", path = "crates/verify-core" }
 # Serialization — the data-driven boundary (claim/verdict/report/command as JSON).

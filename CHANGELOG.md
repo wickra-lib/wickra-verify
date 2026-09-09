@@ -6,6 +6,39 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Maven Central would have rejected the first publish, after the job reported
+  success.** `<scm>` and `<developers>` are validated by Central and their
+  absence is refused outright; the `release` profile did not exist at all, so
+  `mvn -Prelease deploy` matched no profile, warned, and deployed bare -- no
+  sources jar, no javadoc jar, no signatures, and no publishing plugin to send
+  them with. The profile now carries the same four plugins the rest of the
+  organisation publishes with, including `waitUntil=published` so a green job
+  means the artefact is on the repository rather than merely accepted. The two
+  licences are split into separate entries, since `MIT OR Apache-2.0` in one
+  `<name>` is an SPDX expression, not a licence Central recognises.
+
+- **The engine was pinned by name, not by revision.** `wickra-backtest-core`
+  came from a branch with no `rev`, so it tracked whatever upstream had last
+  pushed. Beyond the drift, it makes this crate unusable by a consumer that
+  pins the engine: cargo treats "this URL, default branch" and "this URL at rev
+  X" as two sources, so a downstream pin produces two copies of
+  `wickra-backtest-core` in one graph, and two copies share no types. wickra-zk
+  hit exactly that against wickra-proof.
+
+  Pinning moved the linked engine from `0.1.0` to `0.1.4`, so the goldens are
+  re-blessed through `cargo run -p verify-core --example bless_golden`. Every
+  verdict keeps its meaning: `honest` still matches, and the four doctored
+  claims still fail with the same mismatch counts.
+
+- **A dependency nothing used and that could not resolve.** `wickra-data =
+  "0.9"` was declared for "the CLI's data input" and referenced by no crate.
+  The pin was also unreachable -- `wickra-data` is published at `1.0.x` -- so
+  it never produced a Dependabot PR either. Removed, with the reason recorded
+  in the manifest: `Candle` comes from the engine, so adding it back would mean
+  two crates defining the same row.
+
 ### Added
 - Repository scaffold, governance, and supply-chain baseline for `wickra-verify`.
 - `verify-core`: the deterministic core — `Claim` / `Verdict` / `Mismatch` wire

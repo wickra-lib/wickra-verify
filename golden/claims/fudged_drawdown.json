@@ -976,6 +976,8 @@
       "win_rate": 100.0
     },
     "schema_version": 1,
+    "symbol": "BTCUSDT",
+    "timeframe": "1h",
     "trades": [
       {
         "entry_price": 98.36277825398774,
