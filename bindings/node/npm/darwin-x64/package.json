@@ -4,7 +4,9 @@
   "description": "Native binding for wickra-verify (darwin-x64). Installed automatically as an optional dependency of wickra-verify on matching platforms.",
   "main": "wickra-verify.darwin-x64.node",
   "files": [
-    "wickra-verify.darwin-x64.node"
+    "wickra-verify.darwin-x64.node",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
   ],
   "license": "MIT OR Apache-2.0",
   "engines": {

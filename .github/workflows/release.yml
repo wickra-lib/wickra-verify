@@ -250,6 +250,36 @@ jobs:
         working-directory: bindings/node
         run: npx napi artifacts --output-dir artifacts
 
+      # Every package here declares "MIT OR Apache-2.0" and only package.json is
+      # committed in npm/<platform>/, so without this the texts the licence
+      # names are absent from the published tarball. `files` lists them; this
+      # puts them there, and the check below refuses to publish if npm would
+      # still leave one out.
+      - name: Carry the licence texts into every package
+        working-directory: bindings/node
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in . npm/*/; do
+            cp ../../LICENSE-MIT ../../LICENSE-APACHE "$dir/"
+          done
+          for dir in . npm/*/; do
+            ( cd "$dir" && npm pack --dry-run --json ) | node -e '
+              const chunks = [];
+              process.stdin.on("data", c => chunks.push(c));
+              process.stdin.on("end", () => {
+                const pkg = JSON.parse(chunks.join(""))[0];
+                const names = pkg.files.map(f => f.path);
+                const missing = ["LICENSE-MIT", "LICENSE-APACHE"].filter(n => !names.includes(n));
+                if (missing.length) {
+                  console.error(`::error::${pkg.name} would publish without ${missing.join(" and ")}`);
+                  process.exit(1);
+                }
+                console.log(`${pkg.name}: licence texts present`);
+              });
+            '
+          done
+
       - name: Publish platform packages (idempotent)
         working-directory: bindings/node
         env:
