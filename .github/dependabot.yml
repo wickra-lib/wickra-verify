@@ -125,3 +125,54 @@ updates:
     groups:
       go-binding:
         patterns: ["*"]
+
+  # The fuzz targets have their own lockfile and their own dependency graph;
+    # nothing in the workspace update reaches them.
+  - package-ecosystem: cargo
+    directory: "/fuzz"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps(cargo)"
+    groups:
+      fuzz-deps:
+        patterns: ["*"]
+
+  # The Node example is what a reader copies. A stale dependency there is
+    # advice, not just a lockfile.
+  - package-ecosystem: npm
+    directory: "/examples/node"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps(npm)"
+    groups:
+      examples-node-deps:
+        patterns: ["*"]
+
+  # Same for the Go example.
+  - package-ecosystem: gomod
+    directory: "/examples/go"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps(gomod)"
+    groups:
+      examples-go-deps:
+        patterns: ["*"]
+
+  # The CI Python requirements are hash-pinned, so they only move when
+    # something regenerates them.
+  - package-ecosystem: pip
+    directory: "/.github/requirements"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps(pip)"
+    groups:
+      requirements-deps:
+        patterns: ["*"]

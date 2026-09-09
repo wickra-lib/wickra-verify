@@ -4,7 +4,9 @@
   "description": "Native binding for wickra-verify (win32-x64-msvc). Installed automatically as an optional dependency of wickra-verify on matching platforms.",
   "main": "wickra-verify.win32-x64-msvc.node",
   "files": [
-    "wickra-verify.win32-x64-msvc.node"
+    "wickra-verify.win32-x64-msvc.node",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
   ],
   "license": "MIT OR Apache-2.0",
   "engines": {

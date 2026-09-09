@@ -4,7 +4,9 @@
   "description": "Native binding for wickra-verify (linux-arm64-gnu). Installed automatically as an optional dependency of wickra-verify on matching platforms.",
   "main": "wickra-verify.linux-arm64-gnu.node",
   "files": [
-    "wickra-verify.linux-arm64-gnu.node"
+    "wickra-verify.linux-arm64-gnu.node",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
   ],
   "license": "MIT OR Apache-2.0",
   "engines": {
