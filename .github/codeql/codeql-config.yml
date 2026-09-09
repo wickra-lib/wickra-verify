@@ -1,0 +1,12 @@
+# CodeQL analysis configuration, referenced from .github/workflows/codeql.yml.
+#
+# `paths-ignore` is deliberately empty. In the flagship repository it excludes
+# the generated binding glue -- tens of thousands of lines of napi-derive,
+# P/Invoke and JNI declarations, where CodeQL attributes generated FFI code back
+# to the macro's source span and reports one raw-pointer finding per exported
+# class. This repository has no such file: its bindings are hand-written and
+# small, and every line in them is worth analysing.
+#
+# The rule for adding a path here: a generator owns the file end to end and
+# stamps it as such. Never because a finding in it was inconvenient.
+paths-ignore: []
