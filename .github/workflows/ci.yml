@@ -21,6 +21,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         features: ["--all-features", "--no-default-features"]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30 # backstop against a wedged job, not a budget
     # The CLI binary (wickra-verify) and the C ABI cdylib (wickra_verify) share a
     # stem on Windows, so building both in one --workspace pass can race on the
     # same .pdb and trip LNK1201. Dropping debug info (tests do not need it)
@@ -42,6 +43,7 @@ jobs:
   lint:
     name: Format & Clippy
     runs-on: ubuntu-latest
+    timeout-minutes: 15 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -57,6 +59,7 @@ jobs:
   msrv:
     name: MSRV workspace (1.86)
     runs-on: ubuntu-latest
+    timeout-minutes: 30 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -76,6 +79,7 @@ jobs:
   msrv-node:
     name: MSRV node (1.88)
     runs-on: ubuntu-latest
+    timeout-minutes: 30 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -89,6 +93,7 @@ jobs:
   supply-chain:
     name: cargo-deny
     runs-on: ubuntu-latest
+    timeout-minutes: 15 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -98,9 +103,35 @@ jobs:
           tool: cargo-deny
       - run: cargo deny check
 
+      # osv-scanner.toml exists in this repository and nothing ran it. The file
+      # records the advisories assessed as not affecting the project, with the
+      # reasoning beside each -- an assessment that was load-bearing for nobody,
+      # because no workflow ever consulted it.
+      #
+      # cargo-deny above covers the Rust graph only. This covers the other
+      # ecosystems the repository ships into -- npm, PyPI, Maven, NuGet, Go
+      # modules, R -- which had no vulnerability scanning in CI at all.
+      #
+      # --no-resolve turns off transitive resolution of *manifests*. The default
+      # enricher resolves each pom.xml against Maven Central, and ours depend on
+      # an org.wickra artefact at the version in the tree, which does not exist
+      # there until the release publishes it. Without the flag every version
+      # bump fails this job on a lookup for the artefact the bump exists to
+      # create. Everything pinned in a lockfile is still scanned in full and
+      # transitively, because a lockfile needs no resolution.
+      - name: osv-scanner
+        uses: google/osv-scanner-action/osv-scanner-action@6e4298ebc4db23e847df9b2e2de2939d6f066c67 # v2.5.1
+        with:
+          scan-args: |-
+            --recursive
+            --no-resolve
+            --config=osv-scanner.toml
+            ./
+
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
+    timeout-minutes: 45 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -135,6 +166,7 @@ jobs:
   fuzz-smoke:
     name: Fuzz (smoke)
     runs-on: ubuntu-latest
+    timeout-minutes: 45 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -170,6 +202,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ["3.9", "3.11", "3.12", "3.13"]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -193,6 +226,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node-version: ["22", "24"]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -221,6 +255,7 @@ jobs:
   wasm:
     name: WASM
     runs-on: ubuntu-latest
+    timeout-minutes: 45 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -252,6 +287,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -290,6 +326,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -347,6 +384,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 45 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -370,6 +408,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 45 # backstop against a wedged job, not a budget
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -394,6 +433,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30 # backstop against a wedged job, not a budget
     env:
       WKVERIFY_INC: ${{ github.workspace }}/bindings/c/include
       WKVERIFY_LIB: ${{ github.workspace }}/target/release

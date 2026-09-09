@@ -12,6 +12,12 @@ readme.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+# docs.rs builds with default features unless told otherwise, so anything behind
+# a feature flag is missing from the rendered documentation -- silently, because
+# the build still succeeds.
+[package.metadata.docs.rs]
+all-features = true
+
 [lints]
 workspace = true
 
