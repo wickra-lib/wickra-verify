@@ -752,6 +752,18 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: mvn -B -f bindings/java -Prelease deploy -DskipTests
 
+      # The jar is what a Java consumer installs. Maven Central resolves it on
+      # demand, so it does not belong on the release page -- but it does have to
+      # exist as an artifact, or the attestation job has nothing to sign.
+      - name: Upload the Java jar as a build artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: java-jar
+          path: |
+            bindings/java/target/*.jar
+            !bindings/java/target/*-sources.jar
+            !bindings/java/target/*-javadoc.jar
+          if-no-files-found: error
   # Mirror the in-repo Go module to the standalone wickra-verify-go repository so
   # `go get github.com/wickra-lib/wickra-verify-go` builds with no extra steps.
   # The mirror commits the prebuilt libraries per platform under
@@ -806,6 +818,50 @@ jobs:
             mkdir -p "$out/lib/$dir"; cp "$src" "$out/lib/$dir/"
           done
           echo "assembled module:"; find "$out" -type f | sort
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v6.0.0
+        with:
+          go-version: stable
+          cache: false
+
+      # The module was assembled and pushed without ever being compiled. cgo
+      # directives, the vendored header and the staged library are exactly the
+      # things that break silently in assembly, and the first person to find out
+      # would be whoever ran `go get`. Compiling proves the header and the cgo
+      # directives; running proves the library is actually loadable.
+      - name: Verify the assembled module builds and runs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd wickra-verify-go-module
+          cat > smoke_main_test.go <<'GO'
+          package wickra
+
+          import (
+            "strings"
+            "testing"
+          )
+
+          func TestAssembledModuleSmoke(t *testing.T) {
+            if Version() == "" {
+              t.Fatal("Version() returned an empty string")
+            }
+            h := New()
+            defer h.Close()
+            out, err := h.Command(`{"cmd":"version"}`)
+            if err != nil {
+              t.Fatalf("Command: %v", err)
+            }
+            if !strings.Contains(out, "version") {
+              t.Fatalf("unexpected response: %s", out)
+            }
+          }
+          GO
+          go vet ./...
+          go test -run TestAssembledModuleSmoke -v ./...
+          rm smoke_main_test.go
+          echo "module builds, links and runs"
+
       - name: Push to wickra-verify-go and tag the release
         shell: bash
         env:
@@ -942,7 +998,7 @@ jobs:
   attestations:
     name: Attest build provenance
     timeout-minutes: 45
-    needs: [cargo-publish, python-wheels, python-sdist, github-release]
+    needs: [cargo-publish, python-wheels, python-sdist, github-release, c-abi-build, csharp-publish, java-publish]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -960,11 +1016,30 @@ jobs:
           pattern: wheels-*
           path: artifacts/python
           merge-multiple: true
+      - name: Download the C ABI archives
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: c-abi-*
+          path: artifacts/c-abi
+          merge-multiple: true
+      - name: Download the NuGet package
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nuget-package
+          path: artifacts/nuget
+      - name: Download the Java jar
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: java-jar
+          path: artifacts/java
       - name: Attest build provenance
         id: attest
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: |
+            artifacts/c-abi/*.tar.gz
+            artifacts/nuget/*.nupkg
+            artifacts/java/*.jar
             artifacts/crates/*.crate
             artifacts/python/*.whl
             artifacts/python/*.tar.gz
