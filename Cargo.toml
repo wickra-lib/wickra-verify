@@ -79,7 +79,12 @@ clap = { version = "4", features = ["derive"] }
 # C ABI header generation.
 cbindgen = "0.27"
 # Test/dev.
-criterion = "0.8"
+# codspeed-criterion-compat is a drop-in for criterion: the benches keep
+# their criterion API and run as criterion locally, but under
+# `cargo codspeed` they report measurements instead of merely executing.
+# Without the alias the CodSpeed job runs the benchmarks and uploads
+# nothing, which reads as a pass.
+criterion = { package = "codspeed-criterion-compat", version = "5.0.1" }
 proptest = "1"
 
 [workspace.lints.rust]
