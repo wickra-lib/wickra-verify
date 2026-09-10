@@ -190,8 +190,7 @@ examples/                   runnable per-language demos + static web demo
 fuzz/                       cargo-fuzz targets (claim parse, compare, canonicalize, verify)
 ```
 
-## Building from source
-
+## Building everything from source
 ```bash
 cargo build --workspace
 cargo test --workspace --all-features
@@ -200,6 +199,29 @@ cargo test --workspace --all-features
 Each binding builds with its own toolchain; see `bindings/<lang>/README.md`. The
 C-ABI consumers (C/C++, C#, Go, Java, R) need the C ABI library first:
 `cargo build --release -p wickra-verify-c`.
+
+## Testing
+
+Run the suites with the commands in
+[Building everything from source](#building-everything-from-source).
+
+- **`wickra-verify-core`** — unit tests for canonicalization (key ordering, float
+  quantization, whitespace), the verify/round-trip path, tamper detection, and
+  the engine-version pin. The golden fixtures in `golden/` are the anchor: the
+  same `(spec, data)` pair must fold to the same canonical bytes and the same
+  blake3 hash here as in every binding.
+- **Every binding** asserts the *same* golden bytes. That is the whole
+  cross-language claim, so it is checked the same way in each one rather than
+  approximated per language: Python with pytest, Node with `node --test`, WASM
+  with `wasm-bindgen-test`, C and C++ through `ctest`, C# with `dotnet test`,
+  Go with `go test`, Java with JUnit, and R with the shipped `tests/smoke.R`
+  plus the repository-level `tests/run_tests.R`.
+- **`fuzz/`** — libfuzzer targets over the JSON boundary, run as a time-boxed
+  smoke in CI. The goal is catching a regression in the harness, not
+  discovering novel bugs; long campaigns belong on dedicated infrastructure.
+- **Repository checks** — `scripts/check_version_sync.py`,
+  `check_license_copies.py` and `check_readme_links.py` run in CI and assert
+  what the repository ships rather than what it computes.
 
 ## Requirements
 

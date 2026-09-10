@@ -547,3 +547,34 @@ jobs:
             fi
           done
           echo "$checked crate(s) compared against their published baseline"
+
+  # The release builds the Linux wheels inside manylinux and musllinux images.
+  # Nothing else does, so a wheel that only fails there -- a missing system
+  # library, a Perl module OpenSSL's Configure wants -- is invisible until the
+  # tag, where it is already too late. This builds the same two images on every
+  # pull request.
+  python-wheel-container-smoke:
+    name: Python wheel (${{ matrix.manylinux }} smoke)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45 # backstop: vendored OpenSSL adds a from-source compile
+    strategy:
+      fail-fast: false
+      matrix:
+        manylinux: [auto, musllinux_1_2]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Sync root README into bindings/python so the build matches release
+        run: cp README.md bindings/python/README.md
+      - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
+        with:
+          working-directory: bindings/python
+          target: x86_64
+          args: --release --out dist
+          manylinux: ${{ matrix.manylinux }}
+          # Building OpenSSL from source needs Perl modules the minimal
+          # manylinux image lacks. The musllinux cross image ships a complete
+          # Perl and has no yum, so this is a no-op there.
+          before-script-linux: |
+            if command -v yum >/dev/null 2>&1; then yum install -y perl-core perl-IPC-Cmd perl-Data-Dumper perl-Time-Piece; fi
