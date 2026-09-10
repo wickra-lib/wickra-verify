@@ -13,7 +13,7 @@ publish = false
 workspace = true
 
 [dependencies]
-verify-core.workspace = true
+wickra-verify-core.workspace = true
 # Recompute honest reports with the real engine, so the benchmarked claim is a
 # genuine confirm (zero mismatches), not a synthetic shape.
 wickra-backtest-core.workspace = true

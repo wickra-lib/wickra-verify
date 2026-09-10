@@ -41,7 +41,7 @@ pub enum DatasetRef {
 #[serde(deny_unknown_fields)]
 pub struct Claim {
     /// The embedded wickra-backtest `StrategySpec`, kept as raw JSON so
-    /// verify-core stays decoupled from backtest struct internals across the FFI
+    /// wickra-verify-core stays decoupled from backtest struct internals across the FFI
     /// boundary.
     pub strategy: Value,
     /// Where the candle data comes from.

@@ -1,6 +1,6 @@
 //! Regenerate the repository-root `golden/` fixtures from the real engine.
 //!
-//! The golden set pins verify-core's determinism across the Rust integration
+//! The golden set pins wickra-verify-core's determinism across the Rust integration
 //! tests and all ten language bindings. It is produced here, never edited by
 //! hand: this example runs the actual wickra-backtest engine over a fixed
 //! deterministic universe, freezes the honest report, derives the doctored
@@ -10,7 +10,7 @@
 //! Run from the repository root:
 //!
 //! ```sh
-//! cargo run -p verify-core --example bless_golden
+//! cargo run -p wickra-verify-core --example bless_golden
 //! ```
 //!
 //! Everything downstream (`golden/claims`, `golden/expected`) is a pure function
@@ -22,7 +22,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use serde_json::{json, Value};
-use verify_core::Verifier;
+use wickra_verify_core::Verifier;
 use wickra_backtest_core::{run, Candle, StrategySpec};
 
 /// Number of bars in the golden universe. 240 is enough for the moving-average

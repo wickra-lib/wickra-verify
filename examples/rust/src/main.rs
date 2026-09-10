@@ -9,7 +9,7 @@
 use std::collections::BTreeMap;
 
 use serde_json::{json, Value};
-use verify_core::{verify, Candle, Claim, DatasetRef};
+use wickra_verify_core::{verify, Candle, Claim, DatasetRef};
 use wickra_backtest_core::{run, StrategySpec};
 
 const SYMBOL: &str = "AAA";
@@ -61,7 +61,7 @@ fn main() {
     let report = run(&spec, &data[SYMBOL]).expect("engine runs");
     let honest_report = serde_json::to_value(&report).expect("report serializes");
 
-    println!("wickra-verify {}", verify_core::version());
+    println!("wickra-verify {}", wickra_verify_core::version());
 
     // An honest claim confirms.
     let honest = Claim {

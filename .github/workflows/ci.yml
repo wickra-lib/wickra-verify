@@ -144,12 +144,12 @@ jobs:
         uses: taiki-e/install-action@b6ff580856c41316412a0b9b60540fbc6f8c82cc # v2.86.7
         with:
           tool: cargo-llvm-cov
-      # The moat lives in verify-core: canonicalization + hashing + compare +
+      # The moat lives in wickra-verify-core: canonicalization + hashing + compare +
       # verify. Measure it in isolation so patch coverage tracks the core.
       - name: Generate coverage (lcov)
         run: >
           cargo llvm-cov
-          -p verify-core
+          -p wickra-verify-core
           --lcov --output-path lcov.info
       - name: Upload to Codecov
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
@@ -536,7 +536,7 @@ jobs:
         run: |
           set -euo pipefail
           checked=0
-          for crate in verify-core wickra-verify-cli; do
+          for crate in wickra-verify-core wickra-verify-cli; do
             if curl -fsS -A "wickra-ci" "https://crates.io/api/v1/crates/$crate" >/dev/null 2>&1; then
               echo "::group::cargo semver-checks $crate"
               cargo semver-checks check-release -p "$crate"

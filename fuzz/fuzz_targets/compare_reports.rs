@@ -7,7 +7,7 @@
 
 use libfuzzer_sys::fuzz_target;
 use serde_json::Value;
-use verify_core::compare;
+use wickra_verify_core::compare;
 
 fuzz_target!(|data: &[u8]| {
     let Ok(text) = std::str::from_utf8(data) else {

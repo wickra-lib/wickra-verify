@@ -135,7 +135,7 @@ nothing more. See [`docs/VERDICT.md`](docs/VERDICT.md).
 The hashes are only as trustworthy as the serialization they run over, so
 canonicalization is byte-for-byte the contract
 [`wickra-proof`](https://github.com/wickra-lib/wickra-proof) uses (see
-[`crates/verify-core/src/canon.rs`](crates/verify-core/src/canon.rs)): keys
+[`crates/wickra-verify-core/src/canon.rs`](crates/wickra-verify-core/src/canon.rs)): keys
 sorted by code point, no structural whitespace, floats quantized to `1e-8` with
 trailing zeros trimmed and whole values collapsed to integers, no `NaN`/`±inf`.
 `blake3` over that canonical string yields each 64-hex hash. A verdict's
@@ -168,7 +168,7 @@ each `bindings/<lang>/README.md`.
 
 | Language | Binding | Package |
 | -------- | ------- | ------- |
-| Rust | `verify-core` (native) | crates.io |
+| Rust | `wickra-verify-core` (native) | crates.io |
 | Python | PyO3 (native) | PyPI |
 | Node.js | napi (native) | npm |
 | WASM | wasm-bindgen (native) | npm |
@@ -181,7 +181,7 @@ each `bindings/<lang>/README.md`.
 ## Project layout
 
 ```
-crates/verify-core          the library: claim + compare + canonicalize + verify
+crates/wickra-verify-core          the library: claim + compare + canonicalize + verify
 crates/wickra-verify-cli    reference CLI (verify), binary `wickra-verify`
 crates/verify-bench         Criterion benchmarks
 bindings/{c,python,node,wasm,go,csharp,java,r}   ten-language surface

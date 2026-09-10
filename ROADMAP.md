@@ -7,7 +7,7 @@ same structure, the same tests / fuzz / golden / examples / bindings / CI.
 ## Pre-1.0 (0.1.x)
 
 - [x] Repository scaffold, governance, supply-chain and licensing baseline.
-- [ ] `verify-core`: `Claim`, `Verdict`, canonicalization, tolerance-based
+- [ ] `wickra-verify-core`: `Claim`, `Verdict`, canonicalization, tolerance-based
       field comparison, `verify()`, and the `command_json` boundary.
 - [ ] Reference CLI (`wickra-verify`): verify a claim against a data directory,
       text or JSON output, non-zero exit on refutal.

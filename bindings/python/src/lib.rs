@@ -13,7 +13,7 @@
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
-use verify_core::Verifier;
+use wickra_verify_core::Verifier;
 
 /// A verifier driven by JSON commands.
 #[pyclass(name = "Verifier")]

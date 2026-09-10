@@ -29,5 +29,5 @@ workspace = true
 # inherited workspace dependency. The pinned backtest engine is sequential (no
 # rayon), so a wasm run is byte-identical to the native one — the exact
 # cross-language golden check.
-verify-core = { path = "../../crates/verify-core", version = "0.1.0", default-features = false }
+wickra-verify-core = { path = "../../crates/wickra-verify-core", version = "0.1.0", default-features = false }
 wasm-bindgen = "0.2"

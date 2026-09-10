@@ -4,7 +4,7 @@ use crate::args::{Cli, Format};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
-use verify_core::{explain, Candle, Claim, Config, Verifier};
+use wickra_verify_core::{explain, Candle, Claim, Config, Verifier};
 
 /// The rendered output plus the process exit code (0 verified, 2 refuted).
 pub struct Output {
@@ -172,7 +172,7 @@ mod tests {
     #[test]
     fn build_verifier_applies_overrides() {
         // A loose verifier is built without error; behavior is covered in
-        // verify-core. Just confirm construction succeeds with overrides.
+        // wickra-verify-core. Just confirm construction succeeds with overrides.
         assert!(build_verifier(Some(1e-3), Some(1e-2)).is_ok());
         assert!(build_verifier(None, None).is_ok());
     }

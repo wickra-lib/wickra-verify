@@ -7,7 +7,7 @@ the canonicalization [`wickra-proof`](https://github.com/wickra-lib/wickra-proof
 uses, so the two products share one determinism moat — a verdict's `inputs_hash`
 equals the wickra-proof hash of the same inputs.
 
-The rules (see [`crates/verify-core/src/canon.rs`](../crates/verify-core/src/canon.rs)):
+The rules (see [`crates/wickra-verify-core/src/canon.rs`](../crates/wickra-verify-core/src/canon.rs)):
 
 1. **Object keys** are sorted ascending by Unicode code point.
 2. **No structural whitespace** — no spaces or newlines between tokens.

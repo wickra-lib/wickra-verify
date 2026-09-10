@@ -1,4 +1,4 @@
-//! Shared fixtures for the verify-core integration tests: a valid embedded
+//! Shared fixtures for the wickra-verify-core integration tests: a valid embedded
 //! strategy, a small deterministic candle universe, and the honest report that
 //! strategy produces over it (recomputed with the real engine).
 //!
@@ -8,7 +8,7 @@
 
 use serde_json::{json, Value};
 use std::collections::BTreeMap;
-use verify_core::{Candle, Claim, DatasetRef, StrategySpec};
+use wickra_verify_core::{Candle, Claim, DatasetRef, StrategySpec};
 
 /// The symbol the sample strategy trades.
 pub const SYMBOL: &str = "TEST";

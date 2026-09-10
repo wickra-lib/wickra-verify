@@ -15,7 +15,7 @@ fields (`deny_unknown_fields` — any extra key is rejected):
 ## `strategy` — a `StrategySpec`
 
 The embedded [`wickra-backtest`](https://github.com/wickra-lib/wickra-backtest)
-`StrategySpec`, kept as raw JSON so verify-core stays decoupled from the engine's
+`StrategySpec`, kept as raw JSON so wickra-verify-core stays decoupled from the engine's
 struct internals across the FFI boundary. It carries the symbol, timeframe,
 indicators, entry/exit rules, sizing, costs and risk. Example:
 

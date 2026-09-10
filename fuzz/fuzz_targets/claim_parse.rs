@@ -4,7 +4,7 @@
 //! surface as a clean `Err`, never a crash.
 
 use libfuzzer_sys::fuzz_target;
-use verify_core::{Claim, Verifier};
+use wickra_verify_core::{Claim, Verifier};
 
 fuzz_target!(|data: &[u8]| {
     let Ok(text) = std::str::from_utf8(data) else {

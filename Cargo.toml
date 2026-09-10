@@ -2,20 +2,20 @@
 # "Verify any backtest": given a claimed backtest report plus the strategy and
 # candle data it claims to come from, wickra-verify recomputes the report with
 # the pinned wickra-backtest engine and confirms or refutes the claim field by
-# field, deterministically. The core (`verify-core`) is exposed as a
+# field, deterministically. The core (`wickra-verify-core`) is exposed as a
 # JSON-over-C-ABI data API in ten languages, mirroring the Wickra tiering:
 # Rust core -> native Python/Node/WASM + a C ABI hub for C/C++/C#/Go/Java/R.
 # It is a free anti-fraud tool: CLI + bindings + an optional static WASM demo,
 # never a hosted service.
 #
 # The `members` list grows as crates are added, phase by phase; the final set is:
-#   crates/verify-core, crates/wickra-verify-cli, crates/verify-bench,
+#   crates/wickra-verify-core, crates/wickra-verify-cli, crates/verify-bench,
 #   bindings/c, bindings/python, bindings/node, bindings/wasm, examples/rust
 
 [workspace]
 resolver = "2"
 members = [
-    "crates/verify-core",
+    "crates/wickra-verify-core",
     "crates/wickra-verify-cli",
     "crates/verify-bench",
     "examples/rust",
@@ -59,7 +59,7 @@ categories = ["finance", "command-line-utilities"]
 # wickra-strategy-ci reached the same conclusion.
 wickra-backtest-core = { git = "https://github.com/wickra-lib/wickra-backtest", rev = "d58e357506dbb95211d2313eae7bae93d1f73777", version = "0.1" }
 # Workspace-internal crate, referenced by the CLI, bench and bindings.
-verify-core = { version = "0.1.0", path = "crates/verify-core" }
+wickra-verify-core = { version = "0.1.0", path = "crates/wickra-verify-core" }
 # Serialization — the data-driven boundary (claim/verdict/report/command as JSON).
 serde = { version = "1", features = ["derive"] }
 # `float_roundtrip` makes serde_json's float parser correctly rounded: a float
