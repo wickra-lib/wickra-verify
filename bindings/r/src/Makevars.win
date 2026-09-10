@@ -1,4 +1,5 @@
-# On Windows the C ABI DLL is linked directly (mingw resolves the import stubs
-# from wickra_verify.dll); the loader finds it via PATH at run time.
-PKG_CPPFLAGS = -I$(WKVERIFY_INC)
-PKG_LIBS = -L$(WKVERIFY_LIB) -l:wickra_verify.dll
+# Link the import library configure.win builds -- it references
+# wickra_verify_abi.dll, not the package's own DLL. The C ABI header is staged into
+# src/ by configure.win, so the include path is the source directory itself.
+PKG_CPPFLAGS = -I.
+PKG_LIBS = libwickra_verify_abi.dll.a
