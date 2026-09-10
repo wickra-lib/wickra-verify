@@ -484,3 +484,66 @@ jobs:
         run: python scripts/check_license_copies.py
       - name: Binding READMEs link only to what travels with them
         run: python scripts/check_readme_links.py
+
+  # links.yml runs this on a schedule against the whole tree; this is the
+  # pull-request half, so a README that gains a dead link is caught in review
+  # rather than by a nightly nobody is watching. Non-blocking on purpose: an
+  # external host being down is not this repository's defect.
+  links:
+    name: External links (non-blocking)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 10 # backstop against a wedged job, not a budget
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --config lychee.toml --no-progress --root-dir "${{ github.workspace }}" "*.md" "bindings/*/README.md"
+          fail: true
+
+  # The published API is a promise the version number makes. Nothing checked
+  # that a patch release keeps it, and a rename that slips through review goes
+  # out to six registries in one irreversible run.
+  semver:
+    name: Public API (cargo-semver-checks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30 # backstop: it builds rustdoc JSON for each crate and its baseline
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-rust
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - name: Install cargo-semver-checks
+        uses: taiki-e/install-action@c3ec0de9ae7f1019cea21aa96aa0a895b9552063 # v2.87.9
+        timeout-minutes: 10 # fail fast on a stuck download instead of hanging the job
+        with:
+          tool: cargo-semver-checks
+
+      # Named explicitly rather than --workspace: the bench and binding crates
+      # are not published, so they promise nothing and have no baseline.
+      #
+      # A crate with no release yet has no baseline either, and
+      # cargo-semver-checks fails rather than saying so. That is the honest
+      # state of this repository today, not a defect -- an unpublished crate
+      # cannot have broken its published API. So each crate is checked only
+      # once it exists on crates.io, and the job says which ones it skipped.
+      # The moment the first release lands, this starts guarding for real.
+      - name: Check the published crates
+        shell: bash
+        run: |
+          set -euo pipefail
+          checked=0
+          for crate in verify-core wickra-verify-cli; do
+            if curl -fsS -A "wickra-ci" "https://crates.io/api/v1/crates/$crate" >/dev/null 2>&1; then
+              echo "::group::cargo semver-checks $crate"
+              cargo semver-checks check-release -p "$crate"
+              echo "::endgroup::"
+              checked=$((checked + 1))
+            else
+              echo "::notice::$crate is not on crates.io yet; no baseline to compare against"
+            fi
+          done
+          echo "$checked crate(s) compared against their published baseline"
