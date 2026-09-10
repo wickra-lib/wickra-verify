@@ -12,7 +12,7 @@ assignees: []
 
 ## Affected binding
 
-- [ ] Rust crate (`verify-core`)
+- [ ] Rust crate (`wickra-verify-core`)
 - [ ] Python (`pip install wickra-verify`)
 - [ ] Node.js (`npm install wickra-verify`)
 - [ ] WASM

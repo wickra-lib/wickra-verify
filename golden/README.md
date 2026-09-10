@@ -1,6 +1,6 @@
 # Golden fixtures
 
-Frozen `(claim → verdict)` pairs that pin verify-core's determinism across the
+Frozen `(claim → verdict)` pairs that pin wickra-verify-core's determinism across the
 Rust integration tests **and** every language binding. The product is the
 verdict: the same claim over the same data must recompute to the same `Verdict`
 — identical `matches`, `mismatches`, and blake3 hashes — in Rust, Python,
@@ -62,10 +62,10 @@ The fixtures are a pure function of `data/` plus the engine — **never edit the
 by hand**. Regenerate them from the repository root:
 
 ```sh
-cargo run -p verify-core --example bless_golden
+cargo run -p wickra-verify-core --example bless_golden
 ```
 
-The bless tool (`crates/verify-core/examples/bless_golden.rs`) writes the CSV,
+The bless tool (`crates/wickra-verify-core/examples/bless_golden.rs`) writes the CSV,
 runs the real `wickra-backtest` engine to get the honest report, derives the four
 doctored claims from it, and blesses each expected `Verdict` through the same
 `Verifier` command path the bindings drive. Regenerating after an intentional

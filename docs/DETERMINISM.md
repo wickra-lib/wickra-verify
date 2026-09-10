@@ -21,7 +21,7 @@ over WASM. This document is the map of what guarantees that.
 
 ## Why the bindings agree
 
-Every binding is a thin shell over the same `verify-core` compiled code. Each
+Every binding is a thin shell over the same `wickra-verify-core` compiled code. Each
 drives the `Verifier::command_json` surface and returns the core's canonical JSON
 **verbatim** — no language re-implements the logic, so there is nothing to drift.
 The native bindings (Python, Node, WASM) link the Rust core directly; the C-ABI

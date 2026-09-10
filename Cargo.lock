@@ -1215,21 +1215,8 @@ version = "0.1.0"
 dependencies = [
  "criterion",
  "serde_json",
- "verify-core",
  "wickra-backtest-core",
-]
-
-[[package]]
-name = "verify-core"
-version = "0.1.0"
-dependencies = [
- "blake3",
- "proptest",
- "serde",
- "serde_json",
- "thiserror",
- "toml",
- "wickra-backtest-core",
+ "wickra-verify-core",
 ]
 
 [[package]]
@@ -1341,7 +1328,7 @@ dependencies = [
 name = "wickra-verify-c"
 version = "0.1.0"
 dependencies = [
- "verify-core",
+ "wickra-verify-core",
 ]
 
 [[package]]
@@ -1350,7 +1337,20 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "serde_json",
- "verify-core",
+ "wickra-verify-core",
+]
+
+[[package]]
+name = "wickra-verify-core"
+version = "0.1.0"
+dependencies = [
+ "blake3",
+ "proptest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "toml",
+ "wickra-backtest-core",
 ]
 
 [[package]]
@@ -1358,8 +1358,8 @@ name = "wickra-verify-example"
 version = "0.1.0"
 dependencies = [
  "serde_json",
- "verify-core",
  "wickra-backtest-core",
+ "wickra-verify-core",
 ]
 
 [[package]]
@@ -1369,7 +1369,7 @@ dependencies = [
  "napi",
  "napi-build",
  "napi-derive",
- "verify-core",
+ "wickra-verify-core",
 ]
 
 [[package]]
@@ -1377,15 +1377,15 @@ name = "wickra-verify-python"
 version = "0.1.0"
 dependencies = [
  "pyo3",
- "verify-core",
+ "wickra-verify-core",
 ]
 
 [[package]]
 name = "wickra-verify-wasm"
 version = "0.1.0"
 dependencies = [
- "verify-core",
  "wasm-bindgen",
+ "wickra-verify-core",
 ]
 
 [[package]]

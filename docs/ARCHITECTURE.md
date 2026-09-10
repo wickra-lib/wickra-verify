@@ -5,7 +5,7 @@ language bindings over a single JSON-over-C-ABI command boundary.
 
 ```
                       ┌─────────────────────────────────────────┐
-                      │            verify-core (Rust)            │
+                      │            wickra-verify-core (Rust)            │
    Claim ───────────► │  claim.rs   parse + validate the claim   │ ──► Verdict
    (strategy, data,   │  verify.rs  recompute report via engine  │
     claimed_report)   │  compare.rs field-by-field, tolerant     │
@@ -17,7 +17,7 @@ language bindings over a single JSON-over-C-ABI command boundary.
               recomputed BacktestReport ──► compared against claimed_report
 ```
 
-## The core (`crates/verify-core`)
+## The core (`crates/wickra-verify-core`)
 
 - **`claim.rs`** — the `Claim` wire type: `{strategy, dataset_ref, claimed_report}`
   with `deny_unknown_fields`. `dataset_ref` is `Inline` (embedded candles) or
@@ -53,7 +53,7 @@ every binding returns byte-identical bytes.
 
 ## The binding surface
 
-`verify-core` is exposed **natively** in Rust, Python (PyO3), Node.js (napi) and
+`wickra-verify-core` is exposed **natively** in Rust, Python (PyO3), Node.js (napi) and
 WASM (wasm-bindgen), and over a **C ABI hub** — a `cdylib` + generated header —
 in C, C++, C#, Go, Java and R. The C-ABI consumers all speak the same four
 functions (`wickra_verify_new/free/command/version`); each language wraps them in

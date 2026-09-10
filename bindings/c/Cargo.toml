@@ -38,4 +38,4 @@ cast_possible_wrap = "allow"
 similar_names = "allow"
 
 [dependencies]
-verify-core = { workspace = true }
+wickra-verify-core = { workspace = true }

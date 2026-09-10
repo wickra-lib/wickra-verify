@@ -1,4 +1,4 @@
-//! Inline tests for verify-core: canonicalization vectors, honest/fudged claim
+//! Inline tests for wickra-verify-core: canonicalization vectors, honest/fudged claim
 //! verification, mismatch reporting, tolerance handling, and the command-JSON
 //! boundary.
 

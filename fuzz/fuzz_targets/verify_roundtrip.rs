@@ -9,7 +9,7 @@
 use libfuzzer_sys::fuzz_target;
 use serde_json::{json, Value};
 use std::collections::BTreeMap;
-use verify_core::{verify, Candle, Claim, DatasetRef};
+use wickra_verify_core::{verify, Candle, Claim, DatasetRef};
 use wickra_backtest_core::{run, StrategySpec};
 
 const SYMBOL: &str = "F";

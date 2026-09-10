@@ -71,7 +71,7 @@ wickra-verify --claim claim.json --data candles/ --atol 1e-6 --rtol 1e-4
 echo '{"cmd":"canonicalize","value":{"b":2,"a":1}}' | wickra-verify-repl   # (illustrative)
 ```
 
-or in Rust: `verify_core::canonicalize(&value)?`. Same bytes the hash is taken
+or in Rust: `wickra_verify_core::canonicalize(&value)?`. Same bytes the hash is taken
 over — see [CANONICALIZATION.md](CANONICALIZATION.md).
 
 ## Try it in the browser

@@ -1,4 +1,4 @@
-//! # verify-core
+//! # wickra-verify-core
 //!
 //! Verify any backtest: given a [`Claim`] — a strategy, the candle data it ran
 //! on, and the report it is *said* to have produced — recompute the report with
@@ -31,7 +31,7 @@ pub use error::{Error, Result};
 pub use verdict::{Mismatch, Verdict};
 pub use verify::{explain, verify, Verifier};
 
-/// The verify-core crate version.
+/// The wickra-verify-core crate version.
 #[must_use]
 pub fn version() -> &'static str {
     env!("CARGO_PKG_VERSION")

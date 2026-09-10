@@ -6,6 +6,23 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **The core crate is renamed `verify-core` -> `wickra-verify-core`.** It was
+  one of the last two core crates in the organisation without the `wickra-`
+  prefix, and the other one just cost wickra-proof its crate name: `proof-core`
+  1.0.0 was published on crates.io by an unrelated project on 2026-09-09, before
+  that repository had released anything. `verify-core` is still free; the point
+  of taking the prefix now is that an unprefixed generic name is a name someone
+  else can reach first, and the failure only shows up at `cargo publish`, after
+  the tag.
+
+  **Nothing a user types changes.** The CLI binary keeps the name
+  `wickra-verify`, and the Python, npm, NuGet, Maven and R package names never
+  carried the crate name. The Rust library is now
+  `cargo add wickra-verify-core`, and `use verify_core::` becomes
+  `use wickra_verify_core::`.
+
 ### Fixed
 
 - **Maven Central would have rejected the first publish, after the job reported
@@ -28,7 +45,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   hit exactly that against wickra-proof.
 
   Pinning moved the linked engine from `0.1.0` to `0.1.4`, so the goldens are
-  re-blessed through `cargo run -p verify-core --example bless_golden`. Every
+  re-blessed through `cargo run -p wickra-verify-core --example bless_golden`. Every
   verdict keeps its meaning: `honest` still matches, and the four doctored
   claims still fail with the same mismatch counts.
 
@@ -41,7 +58,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 - Repository scaffold, governance, and supply-chain baseline for `wickra-verify`.
-- `verify-core`: the deterministic core — `Claim` / `Verdict` / `Mismatch` wire
+- `wickra-verify-core`: the deterministic core — `Claim` / `Verdict` / `Mismatch` wire
   types, engine-recompute verification, tolerant field-by-field comparison, and
   wickra-proof-compatible canonicalization + blake3 hashing.
 - `wickra-verify` CLI: `--claim` / `--data` / `--explain`, exit 2 on a refuted

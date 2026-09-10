@@ -7,7 +7,7 @@
 mod common;
 
 use std::collections::BTreeMap;
-use verify_core::{canonicalize, verify, Claim, DatasetRef, Verdict};
+use wickra_verify_core::{canonicalize, verify, Claim, DatasetRef, Verdict};
 
 #[test]
 fn claim_json_round_trips_inline() {
@@ -83,7 +83,7 @@ fn mismatch_json_round_trips() {
     let verdict = verify(&claim, &data).unwrap();
     assert_eq!(verdict.mismatches.len(), 1);
     let json = serde_json::to_string(&verdict.mismatches[0]).unwrap();
-    let back: verify_core::Mismatch = serde_json::from_str(&json).unwrap();
+    let back: wickra_verify_core::Mismatch = serde_json::from_str(&json).unwrap();
     assert_eq!(verdict.mismatches[0].field, back.field);
     assert_eq!(verdict.mismatches[0].field, "metrics.sharpe");
 }

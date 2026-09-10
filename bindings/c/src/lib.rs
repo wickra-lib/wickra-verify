@@ -26,7 +26,7 @@ use core::ffi::{c_char, CStr};
 use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::ptr;
 
-use verify_core::Verifier;
+use wickra_verify_core::Verifier;
 
 /// A required pointer argument (`handle` or `cmd_json`) was null.
 pub const WICKRA_VERIFY_ERR_NULL: i32 = -1;

@@ -1,12 +1,12 @@
 #![no_main]
-//! Fuzz the canonicalizer — the determinism moat verify-core shares with
+//! Fuzz the canonicalizer — the determinism moat wickra-verify-core shares with
 //! wickra-proof. Arbitrary bytes are parsed as a JSON value and canonicalized.
 //! The canonical form must never panic, must be idempotent, and must never leak
 //! a non-finite token that was not present verbatim in the input.
 
 use libfuzzer_sys::fuzz_target;
 use serde_json::Value;
-use verify_core::canonicalize;
+use wickra_verify_core::canonicalize;
 
 fuzz_target!(|data: &[u8]| {
     let Ok(text) = std::str::from_utf8(data) else {

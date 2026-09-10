@@ -7,9 +7,9 @@
 mod common;
 
 use serde_json::{json, Value};
-use verify_core::{canonicalize, explain, verify, Verifier};
+use wickra_verify_core::{canonicalize, explain, verify, Verifier};
 
-fn verify_via_command(claim: &verify_core::Claim, data: &Value) -> String {
+fn verify_via_command(claim: &wickra_verify_core::Claim, data: &Value) -> String {
     let cmd = json!({ "cmd": "verify", "claim": claim, "data": data }).to_string();
     Verifier::default().command_json(&cmd).unwrap()
 }

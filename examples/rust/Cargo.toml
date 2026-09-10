@@ -15,6 +15,6 @@ name = "verify"
 path = "src/main.rs"
 
 [dependencies]
-verify-core = { workspace = true }
+wickra-verify-core = { workspace = true }
 wickra-backtest-core = { workspace = true }
 serde_json = { workspace = true }

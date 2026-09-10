@@ -10,7 +10,7 @@
 
 use thiserror::Error;
 
-/// The result of a verify-core operation.
+/// The result of a wickra-verify-core operation.
 pub type Result<T> = std::result::Result<T, Error>;
 
 /// Everything that can go wrong while verifying a claim.

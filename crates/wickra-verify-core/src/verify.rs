@@ -132,7 +132,7 @@ impl Verifier {
         })
     }
 
-    /// The verify-core crate version.
+    /// The wickra-verify-core crate version.
     #[must_use]
     pub fn version() -> &'static str {
         env!("CARGO_PKG_VERSION")

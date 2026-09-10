@@ -12,7 +12,7 @@
 use napi::Result;
 use napi_derive::napi;
 
-use verify_core::Verifier as CoreVerifier;
+use wickra_verify_core::Verifier as CoreVerifier;
 
 /// Build a napi error from a message.
 fn err(message: impl Into<String>) -> napi::Error {

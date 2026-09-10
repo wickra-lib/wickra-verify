@@ -9,7 +9,7 @@ runtime dependency), `wickra-proof` and `wickra-screener`.
 
 ```
                  +---------------------------------------------+
-  (claim, data)  |  verify-core                                |
+  (claim, data)  |  wickra-verify-core                                |
   ------------>  |   claim.rs    Claim { strategy, report, .. }|
                  |   verify.rs   verify() -> Verdict           |
                  |   compare.rs  field-by-field within tolerance|--> Verdict

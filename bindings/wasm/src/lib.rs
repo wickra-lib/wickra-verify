@@ -12,7 +12,7 @@
 
 use wasm_bindgen::prelude::*;
 
-use verify_core::Verifier as CoreVerifier;
+use wickra_verify_core::Verifier as CoreVerifier;
 
 /// A verifier driven by JSON commands.
 #[wasm_bindgen]

@@ -8,15 +8,15 @@ mod common;
 use proptest::prelude::*;
 use serde_json::{json, Value};
 use std::collections::BTreeMap;
-use verify_core::{canonicalize, verify, Claim, DatasetRef};
+use wickra_verify_core::{canonicalize, verify, Claim, DatasetRef};
 
-fn data_from(closes: &[f64]) -> BTreeMap<String, Vec<verify_core::Candle>> {
+fn data_from(closes: &[f64]) -> BTreeMap<String, Vec<wickra_verify_core::Candle>> {
     let mut data = BTreeMap::new();
     data.insert(common::SYMBOL.to_string(), common::candles_from(closes));
     data
 }
 
-fn claim_with(report: Value, data: &BTreeMap<String, Vec<verify_core::Candle>>) -> Claim {
+fn claim_with(report: Value, data: &BTreeMap<String, Vec<wickra_verify_core::Candle>>) -> Claim {
     Claim {
         strategy: common::strategy_json(),
         dataset_ref: DatasetRef::Inline { data: data.clone() },
