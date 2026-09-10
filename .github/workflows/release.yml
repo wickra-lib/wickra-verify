@@ -26,6 +26,98 @@ env:
   PIP_DEFAULT_TIMEOUT: "120"
 
 jobs:
+  gate:
+    name: Nothing publishes before this
+    needs: [python-wheels, python-sdist, node-build, c-abi-build, cli-binaries]
+    runs-on: ubuntu-latest
+    # Generous because this job waits for ci.yml to settle on the tagged commit;
+    # the wait itself is bounded to 45 minutes inside the step.
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      # workflow_dispatch exists so a release whose publish step failed can be
+      # re-run without moving the tag. It must not become a way to publish from
+      # a branch: dispatched from main, GITHUB_REF_NAME is "main", and cargo,
+      # npm and PyPI would push whatever the manifests currently say.
+      #
+      # Checked here rather than on each publish job: one gate, and a job that
+      # is skipped rather than failed reads as "nothing to do" instead of
+      # "refused".
+      - name: Refuse to publish from anything but a version tag
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          case "$REF" in
+            refs/tags/v*) echo "publishing for $REF" ;;
+            *)
+              echo "::error::release.yml publishes only for a refs/tags/v* ref; got $REF"
+              exit 1
+              ;;
+          esac
+
+      - name: The tagged commit must have passed CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          # ci.yml runs on pushes to main and on pull requests, never on a tag,
+          # so this workflow cannot see the tag's health in its own run. Ask what
+          # the commit itself was graded -- the merge commit the tag points at,
+          # and therefore the state that was actually tested.
+          #
+          # A run still going carries conclusion `null`, which reads the same as
+          # one that failed, and a tag pushed straight after its merge lands
+          # while ci.yml is still queued. Refusing there turns "tagged a minute
+          # early" into a failed release. So wait for the verdict rather than
+          # treat its absence as one; a red conclusion still ends this at once.
+          deadline=$(( $(date +%s) + 45 * 60 ))
+          while :; do
+            ci_state=$(gh api "repos/${REPO}/actions/workflows/ci.yml/runs?head_sha=${SHA}&per_page=1" \
+                 -q '(.workflow_runs[0] // {}) | "\(.status // "missing") \(.conclusion // "null")"')
+            ci_status=${ci_state%% *}
+            ci=${ci_state##* }
+            if [ "$ci" = "success" ]; then break; fi
+            if [ "$ci" != "null" ]; then
+              echo "::error::ci.yml on ${SHA} is ${ci}; refusing to publish"
+              exit 1
+            fi
+            if [ "$(date +%s)" -ge "$deadline" ]; then
+              echo "::error::ci.yml on ${SHA} did not finish within 45 minutes (${ci_status}); refusing to publish"
+              exit 1
+            fi
+            echo "ci.yml on ${SHA}: ${ci_status} -- waiting"
+            sleep 30
+          done
+          echo "ci.yml on ${SHA}: success"
+
+          # And nothing else that ran on this commit may be red. Listing
+          # required workflows by name goes stale, so the rule is about
+          # outcomes rather than a roster.
+          #
+          # Only the newest run of each workflow counts. ci.yml carries
+          # `concurrency: cancel-in-progress`, so a commit that receives two
+          # push events has its first run cancelled by its second -- and a
+          # cancelled run reads exactly like a failed one. Without the
+          # grouping, any commit that ran CI twice is unreleasable however
+          # green the surviving run was. wickra-strategy-ci lost a release to
+          # precisely this: 51 superseded checks, zero real failures.
+          bad=$(gh api "repos/${REPO}/actions/runs?head_sha=${SHA}&per_page=100" \
+                 -q '[.workflow_runs[] | select(.name != "Release")]
+                     | group_by(.name) | map(max_by(.id))
+                     | map(select(.conclusion == "failure" or .conclusion == "timed_out"))
+                     | map(.name) | unique | join(", ")')
+          if [ -n "$bad" ]; then
+            echo "::error::the tagged commit has failing runs (${bad}); refusing to publish"
+            exit 1
+          fi
+          echo "every workflow that ran on this commit is green"
+
   # --------------------------------------------------------------------------
   # crates.io: verify-core then the wickra-verify-cli crate (wickra-verify binary)
   # --------------------------------------------------------------------------
@@ -33,6 +125,7 @@ jobs:
     name: Publish to crates.io
     timeout-minutes: 45
     runs-on: ubuntu-latest
+    needs: [gate]
     environment: release
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -160,7 +253,7 @@ jobs:
   python-publish:
     name: Publish to PyPI
     timeout-minutes: 45
-    needs: [python-wheels, python-sdist]
+    needs: [gate, python-wheels, python-sdist]
     runs-on: ubuntu-latest
     environment: release
     steps:
@@ -222,7 +315,7 @@ jobs:
   node-publish:
     name: Publish to npm
     timeout-minutes: 45
-    needs: node-build
+    needs: [gate, node-build]
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -370,6 +463,7 @@ jobs:
     name: Publish wickra-verify-wasm to npm
     timeout-minutes: 45
     runs-on: ubuntu-latest
+    needs: [gate]
     environment: release
     permissions:
       contents: read
@@ -526,7 +620,7 @@ jobs:
   csharp-publish:
     name: Publish to NuGet
     timeout-minutes: 45
-    needs: c-abi-build
+    needs: [gate, c-abi-build]
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -603,7 +697,7 @@ jobs:
   java-publish:
     name: Publish to Maven Central
     timeout-minutes: 45
-    needs: c-abi-build
+    needs: [gate, c-abi-build]
     runs-on: ubuntu-latest
     environment: release
     steps:
@@ -667,7 +761,7 @@ jobs:
   go-mirror:
     name: Mirror the Go module to wickra-verify-go
     timeout-minutes: 45
-    needs: c-abi-build
+    needs: [gate, c-abi-build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -744,7 +838,7 @@ jobs:
   github-release:
     name: Attach assets to the draft GitHub Release
     timeout-minutes: 45
-    needs: [cargo-publish, python-publish, node-publish, wasm-publish, cli-binaries, c-abi-build]
+    needs: [cargo-publish, python-publish, node-publish, wasm-publish, cli-binaries, c-abi-build, csharp-publish, java-publish, go-mirror]
     runs-on: ubuntu-latest
     permissions:
       contents: write
