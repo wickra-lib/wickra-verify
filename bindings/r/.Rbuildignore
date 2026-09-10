@@ -1,0 +1,22 @@
+# Everything configure stages into src/ at build time. None of it belongs in
+# the source tarball: the tarball is what r-universe and CRAN build *from*, and
+# configure re-fetches the C ABI for the platform actually being built.
+^src/wickra-verify-c\.tar\.gz$
+^src/wickra-verify-c$
+^src/wickra_verify\.h$
+^src/libwickra_verify\.(so|dylib|a)$
+^src/wickra_verify\.dll$
+^src/wickra_verify\.dll\.a$
+^src/wickra_verify\.def$
+^src/Makevars$
+^src/Makevars\.win$
+^src/.*\.o$
+^src/.*\.so$
+^src/.*\.dll$
+^src/symbols\.rds$
+^\.gitignore$
+# The cross-language golden parity test. It looks for golden/ in a parent
+# directory, which exists in this repository and never in a built tarball, so
+# `R CMD check` would run a test that silently skips its own subject. CI runs it
+# directly from the repository instead; tests/smoke.R is what ships.
+^tests/run_tests\.R$
