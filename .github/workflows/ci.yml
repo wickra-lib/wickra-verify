@@ -484,8 +484,6 @@ jobs:
         run: python scripts/check_license_copies.py
       - name: Binding READMEs link only to what travels with them
         run: python scripts/check_readme_links.py
-      - name: Every binding exposes the same surface
-        run: python scripts/check_binding_surface.py
 
   # links.yml runs this on a schedule against the whole tree; this is the
   # pull-request half, so a README that gains a dead link is caught in review
@@ -622,3 +620,20 @@ jobs:
             [ -e "$f" ] || continue
             Rscript -e "invisible(parse('$f'))" 2>/dev/null || echo "R not installed; skipped $f"
           done
+
+  # Surface parity is its own concern, not a line inside the repository checks:
+  # it is the claim the whole product rests on. A request built in any language
+  # must produce the same canonical bytes, which only holds if every language can
+  # express the same request.
+  binding-surface:
+    name: Binding surface parity
+    runs-on: ubuntu-latest
+    timeout-minutes: 15 # backstop against a wedged job, not a budget
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Every binding exposes the same surface
+        run: python scripts/check_binding_surface.py
+      - name: The R wrapper matches the C ABI header
+        run: python scripts/check_r_abi_skew.py
