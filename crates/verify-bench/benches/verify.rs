@@ -10,8 +10,8 @@
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
 use serde_json::{json, Value};
 use std::collections::BTreeMap;
-use wickra_verify_core::{canonicalize, compare, verify, Candle, Claim, DatasetRef};
 use wickra_backtest_core::{run, StrategySpec};
+use wickra_verify_core::{canonicalize, compare, verify, Candle, Claim, DatasetRef};
 
 const SYMBOL: &str = "BENCH";
 

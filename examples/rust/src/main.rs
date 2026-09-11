@@ -9,8 +9,8 @@
 use std::collections::BTreeMap;
 
 use serde_json::{json, Value};
-use wickra_verify_core::{verify, Candle, Claim, DatasetRef};
 use wickra_backtest_core::{run, StrategySpec};
+use wickra_verify_core::{verify, Candle, Claim, DatasetRef};
 
 const SYMBOL: &str = "AAA";
 
