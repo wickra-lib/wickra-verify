@@ -14,4 +14,5 @@ Encoding: UTF-8
 NeedsCompilation: yes
 SystemRequirements: the wickra-verify C ABI shared library (WKVERIFY_LIB) and its
     header (WKVERIFY_INC).
+Depends: R (>= 2.10)
 RoxygenNote: 7.3.2
