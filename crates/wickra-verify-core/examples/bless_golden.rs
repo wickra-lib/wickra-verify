@@ -22,8 +22,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use serde_json::{json, Value};
-use wickra_verify_core::Verifier;
 use wickra_backtest_core::{run, Candle, StrategySpec};
+use wickra_verify_core::Verifier;
 
 /// Number of bars in the golden universe. 240 is enough for the moving-average
 /// cross to trade repeatedly and for the metrics (Sharpe, drawdown) to settle.
