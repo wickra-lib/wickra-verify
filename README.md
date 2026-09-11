@@ -47,6 +47,33 @@ service, not a SaaS, not a backend. A CLI plus ten language bindings, and an
 optional **static** in-browser WASM demo. Nothing you submit ever leaves your
 machine.
 
+```rust
+use wickra_verify_core::{verify, Claim, DatasetRef};
+
+// A claim is the strategy, the candles it ran over, and the report someone
+// says that run produced. `verify` recomputes the report and compares.
+let claim = Claim {
+    strategy: strategy_json,
+    dataset_ref: DatasetRef::Inline { data: candles_by_symbol.clone() },
+    claimed_report: claimed_report_json,
+};
+let verdict = verify(&claim, &candles_by_symbol)?;
+
+// `matches` is the whole answer; `mismatches` names every field that differs.
+// The same triple yields the same verdict in all ten languages, byte for byte.
+assert!(!verdict.matches);
+assert_eq!(verdict.mismatches[0].field, "fees_paid");
+```
+
+The same call from the command line, against the doctored claim shipped in
+`examples/data` (exit 2 = refuted, which is what a CI gate wants):
+
+```bash
+cargo run -p wickra-verify -- \
+  --claim examples/data/claims/fudged.json \
+  --data examples/data/candles
+```
+
 ## Determinism is the product
 
 - **Recompute, never trust** — the verdict comes from re-running the backtest,
@@ -85,17 +112,10 @@ registries. Track progress in [ROADMAP.md](ROADMAP.md).
 
 ## Quickstart
 
-```bash
-# Verify a claim: recompute the report and compare it, field by field.
-# --claim is a JSON/TOML Claim; --data a CSV or a directory of <SYMBOL>.csv files
-# (omit --data when the claim carries its candles inline).
-cargo run -p wickra-verify -- \
-  --claim examples/data/claims/fudged.json \
-  --data examples/data/candles
-
-# Exit 0 = verified, 2 = refuted (CI-friendly), 1 = error.
-# --explain renders the mismatches and forces exit 0.
-```
+`--claim` is a JSON/TOML Claim; `--data` a CSV or a directory of `<SYMBOL>.csv`
+files (omit `--data` when the claim carries its candles inline). Exit 0 =
+verified, 2 = refuted (CI-friendly), 1 = error; `--explain` renders the
+mismatches and forces exit 0.
 
 The example claim inflates `fees_paid`, so the verdict is **refuted** and names
 the `fees_paid` mismatch — a fabricated number cannot pass a recomputation.
@@ -234,6 +254,39 @@ compiler with CMake for the C example.
 Criterion benchmarks for `verify`, `compare` and `canonicalize` live in
 `crates/verify-bench`; numbers and methodology are in
 [BENCHMARKS.md](BENCHMARKS.md).
+
+## Ecosystem
+
+Part of the [Wickra](https://github.com/wickra-lib/wickra) family — each one a
+data-driven core with a CLI and the same ten-language binding surface:
+
+- [**wickra**](https://github.com/wickra-lib/wickra) — main library (Rust core + Python / Node.js / WASM bindings + a C ABI for C / C++ / C# / Go / Java / R)
+- [**wickra-playground**](https://github.com/wickra-lib/wickra-playground) — a polyglot strategy playground: one StrategySpec live side by side in Python, Rust, JS and Go, entirely in the browser
+- [**wickra-exchange**](https://github.com/wickra-lib/wickra-exchange) — unified market-data + execution across ten crypto exchanges
+- [**wickra-backtest**](https://github.com/wickra-lib/wickra-backtest) — event-driven backtester over the Wickra core
+- [**wickra-terminal**](https://github.com/wickra-lib/wickra-terminal) — the trading terminal: a TUI and a browser renderer over the stack
+- [**wickra-screener**](https://github.com/wickra-lib/wickra-screener) — parallel multi-symbol screening over 514 streaming indicators
+- [**wickra-radar**](https://github.com/wickra-lib/wickra-radar) — perp-universe alert radar: OI delta, funding flip, book imbalance, liquidation clusters, OI/price divergence
+- [**wickra-copilot**](https://github.com/wickra-lib/wickra-copilot) — local market copilot grounded in real order-book, liquidation and funding microstructure
+- [**wickra-shazam**](https://github.com/wickra-lib/wickra-shazam) — match an asset's current microstructure fingerprint against its entire history
+- [**wickra-benchmark**](https://github.com/wickra-lib/wickra-benchmark) — reproducible, golden-verified benchmark suite — recompute any (strategy, dataset, report) in ten languages and confirm it byte-for-byte
+- [**wickra-strategy-ci**](https://github.com/wickra-lib/wickra-strategy-ci) — Jest for trading strategies: golden-pin the report, catch regressions in CI, property-test against fuzzed data
+- [**wickra-verify**](https://github.com/wickra-lib/wickra-verify) — confirm or refute a claimed backtest report against its strategy and data, in ten languages
+- [**wickra-proof**](https://github.com/wickra-lib/wickra-proof) — Proof-of-Backtest: deterministic (spec, data) → report + blake3 hash, recomputable byte-for-byte in ten languages
+- [**wickra-zk**](https://github.com/wickra-lib/wickra-zk) — prove a backtest zero-knowledge — on-chain-verifiable performance without revealing the data or the strategy
+- [**wickra-impact**](https://github.com/wickra-lib/wickra-impact) — the backtester that knows you would have moved the market: agent-based fills on the real historical L2 order book
+- [**wickra-darwin**](https://github.com/wickra-lib/wickra-darwin) — evolutionary strategy search at millions of backtests per second, mutating and crossing JSON specs across the 514-indicator space
+- [**wickra-gym**](https://github.com/wickra-lib/wickra-gym) — a Gymnasium-compatible, microstructure-aware backtest environment with O(1) steps for deterministic RL rollouts
+- [**wickra-feature-store**](https://github.com/wickra-lib/wickra-feature-store) — OHLCV and microstructure streams into ML-ready feature matrices over 514 O(1) streaming indicators
+- [**wickra-genome**](https://github.com/wickra-lib/wickra-genome) — a vector database of the whole market: every asset a 514-dim live vector, for similarity search, clustering and anomaly detection
+- [**wickra-timemachine**](https://github.com/wickra-lib/wickra-timemachine) — scrub the whole market like a video — every symbol, full order book, rewound to any moment via deterministic re-fold
+- [**wickra-synth**](https://github.com/wickra-lib/wickra-synth) — deterministic synthetic market microstructure: OHLCV, order book, trades and funding from a single seed
+- [**wickra-compile**](https://github.com/wickra-lib/wickra-compile) — compile a strategy spec into a standalone deployable: a WASM module, a self-contained binary, or a `no_std` artifact
+- [**wickra-embed**](https://github.com/wickra-lib/wickra-embed) — allocation-free, `no_std` streaming indicators for bare-metal and HFT, byte-for-byte identical to the core
+- [**wickra-pico**](https://github.com/wickra-lib/wickra-pico) — the O(1) indicator core running bare-metal on a $5 Raspberry Pi Pico — the LED blinks on the EMA cross
+
+Docs at [docs.wickra.org](https://docs.wickra.org); the marketing site and
+in-browser demo at [wickra.org](https://wickra.org).
 
 ## Contributing
 
