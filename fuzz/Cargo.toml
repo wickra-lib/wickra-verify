@@ -12,7 +12,7 @@ libfuzzer-sys = "0.4"
 serde_json = "1"
 # The core under test, plus the engine used to synthesize honest claims.
 wickra-verify-core = { path = "../crates/wickra-verify-core" }
-wickra-backtest-core = { git = "https://github.com/wickra-lib/wickra-backtest", version = "0.1" }
+wickra-backtest-core = "=0.1.4"
 
 # Detach from the parent workspace — cargo-fuzz builds this crate on its own with
 # sanitizer flags on a nightly toolchain.

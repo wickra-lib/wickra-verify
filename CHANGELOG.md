@@ -8,6 +8,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **The engine pin moves from a git rev to the published release.**
+  `wickra-backtest-core` is `=0.1.4` from crates.io in the workspace and in
+  the fuzz manifest, which is the same source code as the pinned rev
+  `d58e357` minus one Java pom. The rev was the defect: cargo treats "this git
+  URL, default branch" and "this git URL at rev X" as two sources, the fuzz
+  manifest pinned the branch while the workspace pinned the rev, and the fuzz
+  build carried two copies of the engine -- `verify_roundtrip` failed to
+  compile with `expected &[Candle], found &Vec<Candle>`, two `Candle` types
+  that share nothing. A registry version cannot split that way, and
+  `cargo publish` needs one anyway.
+
 - **The core crate is renamed `verify-core` -> `wickra-verify-core`.** It was
   one of the last two core crates in the organisation without the `wickra-`
   prefix, and the other one just cost wickra-proof its crate name: `proof-core`
