@@ -97,13 +97,11 @@ jobs:
       - name: Build the C# binding and tests
         if: matrix.language == 'csharp'
         run: dotnet build bindings/csharp/WickraVerify.Tests/WickraVerify.Tests.csproj -c Release
-      - name: Build the Java binding and examples
+      # The example is one source file compiled with javac by the Examples
+      # job; it has no pom, so a Maven build of examples/java cannot exist.
+      - name: Build the Java binding
         if: matrix.language == 'java-kotlin'
-        shell: bash
-        run: |
-          set -euo pipefail
-          mvn -B -f bindings/java install -DskipTests
-          mvn -B -f examples/java test-compile -DskipTests
+        run: mvn -B -f bindings/java package -DskipTests
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28 # v4.37.8
         with:
