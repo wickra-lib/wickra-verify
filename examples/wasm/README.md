@@ -16,10 +16,10 @@ HTTP (browsers refuse to load ES modules from `file://`):
 
 ```sh
 # 1. Build the wasm package (once; requires wasm-pack)
-( cd bindings/wasm && wasm-pack build --target web --out-dir ../../examples/web/pkg )
+( cd bindings/wasm && wasm-pack build --target web --out-dir ../../examples/wasm/pkg )
 
 # 2. Serve this directory with any static file server, e.g.
-python -m http.server -d examples/web
+python -m http.server -d examples/wasm
 #    then open http://localhost:8000
 ```
 

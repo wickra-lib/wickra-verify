@@ -1,11 +1,11 @@
 // Browser demo wiring: load the wasm verifier, prefill an example claim, and
 // verify it on demand — all client-side. Build the pkg first (see README.md):
 //
-//   ( cd bindings/wasm && wasm-pack build --target web --out-dir ../../examples/web/pkg )
+//   ( cd bindings/wasm && wasm-pack build --target web --out-dir ../../examples/wasm/pkg )
 //
 // then serve this directory over http (ES modules do not load from file://):
 //
-//   python -m http.server -d examples/web
+//   python -m http.server -d examples/wasm
 
 import init, { Verifier } from "./pkg/wickra_verify_wasm.js";
 

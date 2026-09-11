@@ -584,52 +584,159 @@ jobs:
   # against an API change and stay green -- the worst kind of documentation,
   # because it looks executable. This compiles each of them; it does not run
   # them, since several want a network or a built native library.
-  examples-smoke:
-    name: Examples (build smoke)
+  examples:
+    name: Examples
     runs-on: ubuntu-latest
-    timeout-minutes: 30 # backstop against a wedged job, not a budget
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: ./.github/actions/setup-rust
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-      - name: Rust example
-        run: cargo check -p wickra-verify-example
-      - name: Node example parses
-        run: |
-          set -euo pipefail
-          for f in examples/node/*.mjs examples/node/*.js; do
-            [ -e "$f" ] || continue
-            node --check "$f"
-          done
-      - name: Python example parses
-        run: |
-          set -euo pipefail
-          for f in examples/python/*.py; do
-            [ -e "$f" ] || continue
-            python -m py_compile "$f"
-          done
-      - name: Go example vets
-        run: |
-          set -euo pipefail
-          # `a && b || true` is not if-then-else: a gofmt failure would have
-          # been swallowed by the `|| true` meant for the missing-module case.
-          if [ -f examples/go/go.mod ]; then
-            ( cd examples/go && gofmt -l . && go vet ./... )
-          fi
-      - name: R example parses
-        run: |
-          set -euo pipefail
-          for f in examples/r/*.R; do
-            [ -e "$f" ] || continue
-            Rscript -e "invisible(parse('$f'))" 2>/dev/null || echo "R not installed; skipped $f"
-          done
 
-  # Surface parity is its own concern, not a line inside the repository checks:
-  # it is the claim the whole product rests on. A request built in any language
-  # must produce the same canonical bytes, which only holds if every language can
-  # express the same request.
+      - name: Warm cargo registry (retry transient DNS/registry flakes)
+        shell: bash
+        # CARGO_NET_RETRY rides out short blips, but a longer runner DNS outage
+        # outlasts cargo's rapid in-process retries: the crates.io index fetch
+        # the first cargo step does ("Could not resolve host: index.crates.io")
+        # then fails the whole job. Pre-fetch the dependency graph here with real
+        # backoff, so the steps after it resolve from the warmed local cache.
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if cargo fetch; then exit 0; fi
+            echo "::warning::cargo fetch failed (attempt $attempt/5) -- likely a registry/DNS flake; retrying in $((attempt * 20))s..."
+            sleep $((attempt * 20))
+          done
+          echo "::error::cargo fetch still failing after 5 attempts"
+          exit 1
+
+      - name: Build the C ABI library the non-native bindings link against
+        run: cargo build -p wickra-verify-c --release
+
+      - name: Stage the native library for Go and put it on the loader path
+        shell: bash
+        run: |
+          mkdir -p bindings/go/lib/linux_amd64
+          cp target/release/libwickra_verify.so bindings/go/lib/linux_amd64/
+          echo "LD_LIBRARY_PATH=$PWD/target/release:$LD_LIBRARY_PATH" >> "$GITHUB_ENV"
+
+      # Every example builds the same one-panel verify from the same two trades;
+      # this is what each run is checked against, so an example that starts and
+      # prints nothing fails.
+      - name: Rust
+        shell: bash
+        run: |
+          out=$(cargo run -q -p wickra-verify-example)
+          echo "$out"
+          echo "$out" | grep -q 'doctored claim: REFUTED'
+
+      # `maturin develop` wants a virtualenv; the python job builds a wheel and
+      # installs it instead, which needs none. Same route here.
+      - name: Python
+        shell: bash
+        run: |
+          # No `pip install --upgrade pip` first: that fetch is itself unpinned,
+          # which is what the hash-locked file below exists to avoid, and the
+          # runner image ships a pip far newer than --require-hashes needs.
+          python -m pip install --require-hashes -r .github/requirements/ci-dev.txt
+          ( cd bindings/python && maturin build --release --out dist )
+          python -m pip install --no-index --find-links bindings/python/dist wickra-verify
+          out=$(python examples/python/verify.py)
+          echo "$out"
+          echo "$out" | grep -q 'doctored claim: REFUTED'
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        id: setup_node_examples
+        continue-on-error: true
+        with:
+          node-version: "22"
+      - name: Pause before retrying the toolchain download
+        if: steps.setup_node_examples.outcome == 'failure'
+        run: sleep 30
+        shell: bash
+      - name: Retry the toolchain download
+        if: steps.setup_node_examples.outcome == 'failure'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+      - name: Node.js
+        shell: bash
+        run: |
+          ( cd bindings/node && npm install --no-audit --no-fund && npx napi build --platform --release )
+          ( cd examples/node && npm install --no-audit --no-fund )
+          out=$(node examples/node/verify.js)
+          echo "$out"
+          echo "$out" | grep -q 'doctored claim: REFUTED'
+
+      # The browser demo keeps its ES module in examples/wasm/app.js, and
+      # nothing else in this repository parses it. Parse-check it, so a broken
+      # edit to the in-page logic fails here rather than in a reader's browser.
+      # It cannot be *run* here for the same reason the others can: it needs a
+      # DOM and a fetched .wasm, which is a headless browser, not a step.
+      - name: WASM demo module script
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          count=0
+          for f in examples/wasm/*.js examples/wasm/*.mjs; do
+            echo "node --check $f"
+            node --check "$f"
+            count=$((count + 1))
+          done
+          test "$count" -ge 1
+          echo "checked $count WASM demo module script(s)"
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.23"
+      - name: Go
+        shell: bash
+        run: |
+          out=$(cd examples/go && go run .)
+          echo "$out"
+          echo "$out" | grep -q 'doctored claim: REFUTED'
+
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          distribution: temurin
+          java-version: "22"
+      - name: Java
+        shell: bash
+        run: |
+          mvn -f bindings/java/pom.xml -q package -DskipTests
+          javac -cp bindings/java/target/classes examples/java/Verify.java -d examples/java/out
+          out=$(java --enable-native-access=ALL-UNNAMED \
+            -Dnative.lib.dir="$PWD/target/release" \
+            -cp "bindings/java/target/classes:examples/java/out" Verify)
+          echo "$out"
+          echo "$out" | grep -q 'doctored claim: REFUTED'
+
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: "8.0.x"
+      - name: C#
+        shell: bash
+        run: |
+          out=$(dotnet run --project examples/csharp/Verify)
+          echo "$out"
+          echo "$out" | grep -q 'doctored claim: REFUTED'
+
+      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+        with:
+          use-public-rspm: true
+      - name: R
+        shell: bash
+        env:
+          WKVERIFY_INC: ${{ github.workspace }}/bindings/c/include
+          WKVERIFY_LIB: ${{ github.workspace }}/target/release
+        run: |
+          R CMD INSTALL bindings/r
+          out=$(Rscript examples/r/verify.R)
+          echo "$out"
+          echo "$out" | grep -q 'doctored claim: REFUTED'
+
   binding-surface:
     name: Binding surface parity
     runs-on: ubuntu-latest
