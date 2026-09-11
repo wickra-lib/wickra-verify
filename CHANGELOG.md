@@ -8,6 +8,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Every binding tests both operating modes, and the C ABI is tested at
+  all.** A claim names its candles by reference (`dataset_ref.kind: files`,
+  the data supplied with the `verify` command) or inline (embedded in the
+  claim); the verdict must not depend on which, and only `inputs_hash` may
+  differ, because it binds the reference. Python, Node, C#, Go, Java, R, WASM
+  and C now re-issue every golden claim inline and assert exactly that. The C
+  ABI, which six of the ten reaches sit on, had no test beside its examples;
+  `examples/c/golden_test.c` runs the golden corpus and the mode check under
+  ctest, with the claim list globbed by CMake. The WASM tests load the
+  nodejs build directly and run under `node --test` in the WASM job, which
+  replaces the parity script that used to do only the golden half.
+
 - **The Examples job runs every example and checks what it prints.** It
   used to parse the Python, Node and R files and `cargo check` the Rust one;
   the Go, Java and C# examples were never built, and the WASM demo never

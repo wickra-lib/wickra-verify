@@ -33,8 +33,12 @@ consumers (C, C++, C#, Go, Java, R) call into the same `cdylib`.
   doctored) frozen to their expected verdicts, produced by a committed bless tool
   running the real engine. Every binding's golden test verifies each claim and
   asserts the response equals `golden/expected/<claim>.json` byte-for-byte. The
-  Rust `tests/golden.rs`, the per-binding golden tests, and CI's
-  `wasm-golden-parity.mjs` all assert the same bytes.
+  Rust `tests/golden.rs` and the per-binding golden tests -- the WASM one
+  included, over the nodejs build -- all assert the same bytes.
+- **Operating-mode equivalence** -- every binding also re-issues each golden
+  claim with its candles embedded inline instead of supplied with the command
+  and asserts the verdict is the same, `inputs_hash` aside: that one field
+  binds the dataset *reference*, so it must differ between the two.
 - **Property tests** (`tests/proptest_invariants.rs`) — over random universes: an
   honest claim always confirms with zero mismatches, one doctored field yields
   exactly one mismatch, canonicalization is idempotent and key-order invariant.
