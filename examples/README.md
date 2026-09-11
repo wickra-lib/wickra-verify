@@ -20,7 +20,7 @@ engine directly), showing both sides of the guarantee.
 | .NET | [`csharp/Verify/`](csharp/Verify/) | `dotnet run --project examples/csharp/Verify` |
 | Java | [`java/Verify.java`](java/Verify.java) | see the header comment |
 | R | [`r/verify.R`](r/verify.R) | `Rscript examples/r/verify.R` |
-| Web | [`web/`](web/) | static WebAssembly demo — see [`web/README.md`](web/README.md) |
+| Web | [`wasm/`](wasm/) | static WebAssembly demo — see [`wasm/README.md`](wasm/README.md) |
 
 The native bindings (Python, Node.js) load their own compiled library. The
 bindings that go through the C ABI (Go, .NET, Java, R, and the C/C++ example

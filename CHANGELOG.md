@@ -8,6 +8,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **The Examples job runs every example and checks what it prints.** It
+  used to parse the Python, Node and R files and `cargo check` the Rust one;
+  the Go, Java and C# examples were never built, and the WASM demo never
+  looked at. Now each example is executed against the library it ships with
+  and must print `doctored claim: REFUTED` -- an example that starts and
+  prints nothing fails. The browser demo moves from `examples/web/` to
+  `examples/wasm/`, the name every sibling uses, and its module is
+  parse-checked with `node --check`.
+
 - **The engine pin moves from a git rev to the published release.**
   `wickra-backtest-core` is `=0.1.4` from crates.io in the workspace and in
   the fuzz manifest, which is the same source code as the pinned rev

@@ -60,3 +60,9 @@ bindings/r/src/wickra_verify_abi.def
 bindings/r/src/wickra-verify-c*
 bindings/r/src/Makevars
 bindings/r/src/symbols.rds
+
+# Example build output. The Java example is compiled to a directory beside it by
+# the command in its own header comment, and by the `examples` CI job; the
+# WASM demo loads a wasm-pack build staged next to it.
+examples/java/out/
+examples/wasm/pkg/

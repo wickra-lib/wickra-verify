@@ -76,7 +76,7 @@ over — see [CANONICALIZATION.md](CANONICALIZATION.md).
 
 ## Try it in the browser
 
-`examples/web/` is a static WebAssembly page: paste a claim, press **Verify**, see
+`examples/wasm/` is a static WebAssembly page: paste a claim, press **Verify**, see
 the verdict — all client-side, no server. Build with
 `wasm-pack build --target web` and serve the folder. See
-[`examples/web/README.md`](../examples/web/README.md).
+[`examples/wasm/README.md`](../examples/wasm/README.md).
