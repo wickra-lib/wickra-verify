@@ -458,7 +458,8 @@ jobs:
           export WKVERIFY_INC="${WKVERIFY_INC//\\//}"
           export WKVERIFY_LIB="${WKVERIFY_LIB//\\//}"
           if command -v cygpath >/dev/null 2>&1; then
-            export PATH="$(cygpath -u "$WKVERIFY_LIB"):$PATH"
+            WKVERIFY_LIB_UNIX=$(cygpath -u "$WKVERIFY_LIB")
+            export PATH="$WKVERIFY_LIB_UNIX:$PATH"
           else
             export LD_LIBRARY_PATH="$WKVERIFY_LIB:$LD_LIBRARY_PATH"
             export DYLD_LIBRARY_PATH="$WKVERIFY_LIB:$DYLD_LIBRARY_PATH"
@@ -612,7 +613,11 @@ jobs:
       - name: Go example vets
         run: |
           set -euo pipefail
-          if [ -f examples/go/go.mod ]; then ( cd examples/go && gofmt -l . && go vet ./... || true ); fi
+          # `a && b || true` is not if-then-else: a gofmt failure would have
+          # been swallowed by the `|| true` meant for the missing-module case.
+          if [ -f examples/go/go.mod ]; then
+            ( cd examples/go && gofmt -l . && go vet ./... )
+          fi
       - name: R example parses
         run: |
           set -euo pipefail
