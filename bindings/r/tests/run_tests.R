@@ -123,4 +123,62 @@ if (!is.null(g)) {
   }
 }
 
+
+## operating-mode equivalence: a claim verifies the same whichever way its data
+## arrives. A claim names its candles by reference (dataset_ref.kind "files",
+## the data supplied with the verify command) or inline (kind "inline",
+## embedded in the claim). The verdict must not depend on which: same matches,
+## mismatches, report hashes and engine. Only inputs_hash may differ, because
+## it binds the dataset *reference* -- and it must differ, or the reference was
+## not hashed. The golden claims are files claims; each is re-issued inline.
+## The verdict is canonical JSON with sorted keys, so the two responses are
+## compared whole after the one field allowed to differ is masked.
+load_golden_series <- function(g) {
+  series <- character(0)
+  for (csv in sort(list.files(file.path(g, "data"), pattern = "\\.csv$", full.names = TRUE))) {
+    rows <- character(0)
+    for (line in trimws(readLines(csv, warn = FALSE))) {
+      if (!nzchar(line)) next
+      cols <- trimws(strsplit(line, ",")[[1]])
+      if (length(cols) < 6 || is.na(suppressWarnings(as.integer(cols[1])))) next
+      rows <- c(rows, paste0(
+        '{"time":', cols[1], ',"open":', cols[2], ',"high":', cols[3],
+        ',"low":', cols[4], ',"close":', cols[5], ',"volume":', cols[6], '}'
+      ))
+    }
+    series[sub("\\.csv$", "", basename(csv))] <- paste0("[", paste(rows, collapse = ","), "]")
+  }
+  series
+}
+
+mask_inputs_hash <- function(verdict) {
+  sub('"inputs_hash":"[0-9a-f]{64}"', '"inputs_hash":"-"', verdict)
+}
+
+if (!is.null(g)) {
+  series <- load_golden_series(g)
+  for (claim_path in list.files(file.path(g, "claims"), pattern = "\\.json$", full.names = TRUE)) {
+    claim_json <- trimws(paste(readLines(claim_path, warn = FALSE), collapse = "\n"))
+    # A files reference nests no object of its own, so one brace pair is the span.
+    ref_span <- regexpr('"dataset_ref"\\s*:\\s*\\{[^{}]*\\}', claim_json, perl = TRUE)
+    stopifnot(ref_span > 0)
+    ref <- regmatches(claim_json, ref_span)
+    stopifnot(grepl('"files"', ref, fixed = TRUE))
+    after_symbols <- sub('(?s).*"symbols"', "", ref, perl = TRUE)
+    symbols <- gsub('"', "", regmatches(after_symbols, gregexpr('"[^"]+"', after_symbols))[[1]])
+    inline_data <- paste0('"', symbols, '":', series[symbols], collapse = ",")
+    inline_claim <- paste0(
+      substr(claim_json, 1, ref_span - 1),
+      '"dataset_ref":{"kind":"inline","data":{', inline_data, "}}",
+      substr(claim_json, ref_span + attr(ref_span, "match.length"), nchar(claim_json))
+    )
+
+    mverifier <- wkverify_new()
+    supplied <- wkverify_command(mverifier, paste0('{"cmd":"verify","claim":', claim_json, ',"data":', data_json, "}"))
+    inline <- wkverify_command(mverifier, paste0('{"cmd":"verify","claim":', inline_claim, "}"))
+    stopifnot(!identical(hex_field(supplied, "inputs_hash"), hex_field(inline, "inputs_hash")))
+    stopifnot(identical(mask_inputs_hash(supplied), mask_inputs_hash(inline)))
+  }
+}
+
 cat("wickra-verify R tests passed\n")
