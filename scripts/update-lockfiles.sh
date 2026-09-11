@@ -38,13 +38,13 @@ echo "==> Python (.github/requirements/*.txt via uv)"
 # everyone who regenerates a lockfile. Set WICKRA_BOOTSTRAP_UV=1 to opt in; the
 # bootstrap then fetches one pinned release archive and refuses to use it unless
 # its checksum matches the one recorded here.
-UV_VERSION="0.12.7"
+UV_VERSION="0.12.13"
 uv_sha256() {
   case "$1" in
-    x86_64-unknown-linux-gnu)  echo "788f18abea7c5f55d6216e4f5613fd89d4d59b631efeec117b2b07fe72f1da21" ;;
-    aarch64-unknown-linux-gnu) echo "66393193038dd7eb108abd7a218d9cec04ac70ab98242b0720fa94de19223b7c" ;;
-    aarch64-apple-darwin)      echo "127ebdda7ad953cdf198e964b570ea5771b85467ea93eb7cb6d6f8e6f55408f3" ;;
-    x86_64-apple-darwin)       echo "06b8ae1da8c2661c5434507a66f8c2b0b835933bf955b5958a9ac357a37d1959" ;;
+    x86_64-unknown-linux-gnu)  echo "745765a3b6e360ad76743599ae5c42e9278c7edf8bbff9fc76d05bf2623a04dd" ;;
+    aarch64-unknown-linux-gnu) echo "2eaa5d94f5db7b3a1a092156b9420459e42ab0217d917fe74a876309cef9b5e9" ;;
+    aarch64-apple-darwin)      echo "7e6ddb9316acc00f2296c82ff4d99977870ee34b2f0ddcae9444d714db9364ed" ;;
+    x86_64-apple-darwin)       echo "5e287ef61cb6a9b61b3a83fef124fd143e400468a7dac794230147a810e17119" ;;
     *)                         echo "" ;;
   esac
 }
