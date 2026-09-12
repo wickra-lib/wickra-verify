@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-09-13
+
 ### Changed
 
 - **Every binding tests both operating modes, and the C ABI is tested at
@@ -110,4 +112,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Documentation: architecture, claim format, verdict, canonicalization,
   determinism and a cookbook under `docs/`.
 
-[Unreleased]: https://github.com/wickra-lib/wickra-verify/commits/main
+[Unreleased]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/wickra-lib/wickra-verify/releases/tag/v0.1.0
