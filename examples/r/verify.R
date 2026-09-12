@@ -29,7 +29,7 @@ candle <- function(i) {
   close <- closes[i]
   open <- if (i == 1) close else closes[i - 1]
   paste0(
-    '{"time":', 1700000000 + (i - 1) * 3600,
+    '{"time":', format(1700000000 + (i - 1) * 3600, scientific = FALSE),
     ',"open":', open,
     ',"high":', max(open, close) + 1,
     ',"low":', min(open, close) - 1,
