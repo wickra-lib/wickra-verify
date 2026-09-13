@@ -213,10 +213,15 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: ./.github/actions/setup-rust
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-      - run: pip install maturin pytest
+      # The build and test tools come from the hash-locked requirements file
+      # Dependabot maintains, not from whatever PyPI resolves today. No
+      # `pip install --upgrade pip` first: that fetch is itself unpinned.
+      - name: Install the pinned Python build and test tools
+        run: python -m pip install --require-hashes -r .github/requirements/ci-dev.txt
       - run: maturin build --out dist
         working-directory: bindings/python
-      - run: pip install --no-index --find-links bindings/python/dist wickra-verify
+      # The wheel this job just built; --no-index means nothing is fetched.
+      - run: python -m pip install --no-index --find-links bindings/python/dist wickra-verify
       - run: pytest bindings/python/tests -q
 
   node:
@@ -591,7 +596,11 @@ jobs:
         run: |
           set -euo pipefail
           checked=0
-          for crate in wickra-verify-core wickra-verify-cli; do
+          # Library crates only: the CLI is a binary with no public API, and
+          # cargo-semver-checks ends with "no crates with library targets
+          # selected" on it -- an error, not a pass -- once it is on crates.io
+          # and the loop reaches it.
+          for crate in wickra-verify-core; do
             if curl -fsS -A "wickra-ci" "https://crates.io/api/v1/crates/$crate" >/dev/null 2>&1; then
               echo "::group::cargo semver-checks $crate"
               cargo semver-checks check-release -p "$crate"
