@@ -710,7 +710,7 @@ jobs:
       - name: Rust
         shell: bash
         run: |
-          out=$(cargo run -q -p wickra-verify-example)
+          out=$(cargo run -q --manifest-path examples/rust/Cargo.toml)
           echo "$out"
           echo "$out" | grep -q 'doctored claim: REFUTED'
 
