@@ -6,6 +6,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- **The R package builds on Windows again.** `bindings/r/.Rbuildignore`
+  excluded `src/Makevars.win` from the source tarball, so every Windows build
+  on r-universe linked the package object without the C ABI import library
+  (`undefined reference to wickra_verify_version`) and failed to load. The
+  file ships with the package now, and the ignore list names the staged
+  files as configure actually names them.
+- **The exported R functions are documented.** `wkverify_new`,
+  `wkverify_command` and `wkverify_version` carried roxygen comments but no
+  generated `man/` pages, which `R CMD check` reported as a WARNING on every
+  platform.
+
 ## [0.1.1] - 2026-09-13
 
 ### Fixed
