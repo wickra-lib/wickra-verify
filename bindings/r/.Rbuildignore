@@ -1,19 +1,22 @@
-# Everything configure stages into src/ at build time. None of it belongs in
-# the source tarball: the tarball is what r-universe and CRAN build *from*, and
-# configure re-fetches the C ABI for the platform actually being built.
+# Every line here is a regular expression, comments included, so no brackets.
+# Keep everything configure stages or the compiler produces out of the R source
+# tarball built by R CMD build. The package is source-distributed: configure
+# fetches the C ABI at install time, or takes it from the INC and LIB dev
+# override, so none of these belong in the distributable. src/Makevars.win is
+# not staged: it is the Windows link line and ships with the package. Without
+# it the Windows build links no import library at all.
+^src/wickra_verify\.h$
+^src/wickra_verify_abi\.dll$
+^src/wickra_verify_abi\.def$
+^src/libwickra_verify_abi\.dll\.a$
+^src/libwickra_verify\.(so|dylib|a)$
 ^src/wickra-verify-c\.tar\.gz$
 ^src/wickra-verify-c$
-^src/wickra_verify\.h$
-^src/libwickra_verify\.(so|dylib|a)$
-^src/wickra_verify\.dll$
-^src/wickra_verify\.dll\.a$
-^src/wickra_verify\.def$
 ^src/Makevars$
-^src/Makevars\.win$
 ^src/.*\.o$
-^src/.*\.so$
-^src/.*\.dll$
+^src/wickraverify\.(dll|so|dylib)$
 ^src/symbols\.rds$
+^src/dlltool\.log$
 ^\.gitignore$
 # The cross-language golden parity test. It looks for golden/ in a parent
 # directory, which exists in this repository and never in a built tarball, so
