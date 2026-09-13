@@ -12,9 +12,8 @@
 # The Python locks are hash-pinned (OpenSSF Scorecard PinnedDependencies) and
 # generated with uv rather than pip-tools because uv can resolve a *target*
 # Python version's full transitive closure — with hashes — without that
-# interpreter being installed locally. That is required for the numpy cp39/cp313
-# split: numpy ships no single release with wheels for both, so ci-dev is locked
-# twice (Python 3.9 and Python 3.10+). If uv is not on PATH the script stops and
+# interpreter being installed locally. ci-dev is locked twice (Python 3.9 and
+# Python 3.10+): the 3.9 lock carries no pytest, see ci-dev-py39.in. If uv is not on PATH the script stops and
 # tells you to install it (https://docs.astral.sh/uv/getting-started/installation/);
 # WICKRA_BOOTSTRAP_UV=1 opts into fetching one pinned, checksum-verified release
 # into a temporary directory instead.
@@ -83,6 +82,5 @@ req=".github/requirements"
 cc="./scripts/update-lockfiles.sh"
 uv pip compile --quiet --python-version 3.9  --generate-hashes --custom-compile-command "$cc" "$req/ci-dev-py39.in" -o "$req/ci-dev-py39.txt"
 uv pip compile --quiet --python-version 3.11 --generate-hashes --custom-compile-command "$cc" "$req/ci-dev-py3.in"  -o "$req/ci-dev-py3.txt"
-uv pip compile --quiet --python-version 3.11 --generate-hashes --custom-compile-command "$cc" "$req/bench.in"       -o "$req/bench.txt"
 
 echo "==> Done. Review 'git diff' before committing."

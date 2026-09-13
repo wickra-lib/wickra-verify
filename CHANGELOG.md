@@ -6,6 +6,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **The Python 3.9 CI row installs no pytest.** pytest 9.x requires 3.10, so
+  the 3.9 row could only pin 8.4.2, which is below the fix for
+  GHSA-6w46-j5rx-g56g and has no backport. The dev requirements are locked
+  twice now (`ci-dev-py3.txt`, `ci-dev-py39.txt`, both hash-pinned), the 3.9
+  lock carries maturin alone, and the row runs the suite through
+  `run_without_pytest.py` -- the same modules, rewritten as plain functions
+  with plain asserts, which 3.10 and up still run under pytest.
+
 ## [0.1.2] - 2026-09-13
 
 ### Fixed

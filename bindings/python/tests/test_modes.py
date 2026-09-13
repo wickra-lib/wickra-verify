@@ -7,77 +7,33 @@ must not depend on which: same ``matches``, same ``mismatches``, same report
 hashes, same engine. Only ``inputs_hash`` may differ, because it binds the
 dataset *reference* -- and it must differ, or the reference was not hashed.
 
-The golden claims are ``files`` claims; each is re-issued inline here.
+The golden claims are ``files`` claims; each is re-issued inline here. Plain
+functions, no test framework, for the same reason as ``test_golden``.
 """
 
 import copy
 import json
-from pathlib import Path
-
-import pytest
 
 from wickra_verify import Verifier
 
-GOLDEN = Path(__file__).resolve().parents[3] / "golden"
-CLAIMS = GOLDEN / "claims"
-DATA = GOLDEN / "data"
+from test_golden import claim_files, load_data
 
 SAME = ("matches", "mismatches", "claimed_report_hash", "actual_report_hash", "engine_version")
 
 
-def _claim_files() -> list[Path]:
-    return sorted(CLAIMS.glob("*.json")) if CLAIMS.is_dir() else []
+def test_supplied_and_inline_data_verify_alike() -> None:
+    data = load_data()
+    for claim_path in claim_files():
+        claim = json.loads(claim_path.read_text())
+        assert claim["dataset_ref"]["kind"] == "files", "golden claims reference their data"
+        symbols = claim["dataset_ref"]["symbols"]
 
+        supplied = json.loads(Verifier().command(json.dumps({"cmd": "verify", "claim": claim, "data": data})))
 
-def _load_data() -> dict:
-    data: dict[str, list[dict]] = {}
-    if not DATA.is_dir():
-        return data
-    for csv in sorted(DATA.glob("*.csv")):
-        candles = []
-        for idx, line in enumerate(csv.read_text().splitlines()):
-            line = line.strip()
-            if not line:
-                continue
-            cols = [c.strip() for c in line.split(",")]
-            try:
-                time = int(cols[0])
-            except ValueError:
-                if idx == 0:
-                    continue  # header row
-                raise
-            candles.append(
-                {
-                    "time": time,
-                    "open": float(cols[1]),
-                    "high": float(cols[2]),
-                    "low": float(cols[3]),
-                    "close": float(cols[4]),
-                    "volume": float(cols[5]),
-                }
-            )
-        data[csv.stem] = candles
-    return data
+        inline_claim = copy.deepcopy(claim)
+        inline_claim["dataset_ref"] = {"kind": "inline", "data": {s: data[s] for s in symbols}}
+        inline = json.loads(Verifier().command(json.dumps({"cmd": "verify", "claim": inline_claim})))
 
-
-@pytest.mark.parametrize("claim_path", _claim_files(), ids=lambda p: p.stem)
-def test_supplied_and_inline_data_verify_alike(claim_path: Path) -> None:
-    claim = json.loads(claim_path.read_text())
-    assert claim["dataset_ref"]["kind"] == "files", "golden claims reference their data"
-    data = _load_data()
-    symbols = claim["dataset_ref"]["symbols"]
-
-    supplied = json.loads(Verifier().command(json.dumps({"cmd": "verify", "claim": claim, "data": data})))
-
-    inline_claim = copy.deepcopy(claim)
-    inline_claim["dataset_ref"] = {"kind": "inline", "data": {s: data[s] for s in symbols}}
-    inline = json.loads(Verifier().command(json.dumps({"cmd": "verify", "claim": inline_claim})))
-
-    for field in SAME:
-        assert inline[field] == supplied[field], field
-    assert inline["inputs_hash"] != supplied["inputs_hash"], "inputs_hash binds the dataset reference"
-
-
-def test_modes_fixtures_present_or_skipped() -> None:
-    if not _claim_files():
-        pytest.skip("golden fixtures not present yet")
+        for field in SAME:
+            assert inline[field] == supplied[field], f"{claim_path.name}: {field}"
+        assert inline["inputs_hash"] != supplied["inputs_hash"], "inputs_hash binds the dataset reference"
