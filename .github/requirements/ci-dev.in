@@ -11,3 +11,7 @@ maturin
 pytest
 # The Python job's oldest interpreter is 3.9; iniconfig 2.2+ requires 3.10.
 iniconfig<2.2
+# pytest resolves to 9.x on 3.10+ and to 8.4.2 on 3.9, which is below the fix
+# for GHSA-6w46-j5rx-g56g (vulnerable tmpdir handling; the fix requires 3.10).
+# Not reachable here: no test uses tmp_path or tmpdir, and the runner is a
+# single-user VM. The Dependabot alert on the 3.9 line is dismissed as not used.
