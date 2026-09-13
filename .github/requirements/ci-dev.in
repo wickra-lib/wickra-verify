@@ -1,7 +1,13 @@
 # Python dev dependencies for the binding CI (build + test). Compiled to a
 # hash-locked ci-dev.txt with:
-#   uv pip compile --generate-hashes .github/requirements/ci-dev.in -o .github/requirements/ci-dev.txt
+#   uv pip compile --generate-hashes --universal --python-version 3.9 \
+#     .github/requirements/ci-dev.in -o .github/requirements/ci-dev.txt
+# --universal with the oldest interpreter the Python job runs, so one lock
+# carries markers for 3.9 through 3.13 instead of resolving for whichever
+# Python compiled it.
 # The screener's Python tests only build the extension and parse JSON reports,
 # so no array/math dependency (numpy) is needed — one lockfile covers py39-py313.
 maturin
 pytest
+# The Python job's oldest interpreter is 3.9; iniconfig 2.2+ requires 3.10.
+iniconfig<2.2
