@@ -157,6 +157,10 @@
                    prints "to finish publishing visit ...", so the job reports
                    success while the artifact is not on the repository. -->
               <waitUntil>published</waitUntil>
+              <!-- Central publishes when it gets to it: the v0.1.0 deployment
+                   was validated in minutes and published after the plugin's
+                   default 30-minute wait had expired. Two hours. -->
+              <waitMaxTime>7200</waitMaxTime>
             </configuration>
           </plugin>
         </plugins>
