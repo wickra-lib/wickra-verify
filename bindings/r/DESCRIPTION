@@ -1,7 +1,7 @@
 Package: wickraverify
 Type: Package
 Title: Verify Any Backtest
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person("kingchenc", role = c("aut", "cre"), email = "support@wickra.org")
 Description: R bindings for wickra-verify over its C ABI hub: create a Verifier,
     recompute a claimed backtest report with the deterministic Wickra engine and

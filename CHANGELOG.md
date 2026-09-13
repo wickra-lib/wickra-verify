@@ -6,6 +6,31 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-13
+
+### Fixed
+
+- **The release front, after the first release ran it.** The v0.1.0 Maven
+  Central deployment was accepted and then took longer than the plugin's
+  30-minute wait to publish, so the job failed while the artifact went live
+  anyway, and the assets, the provenance and the GitHub Release behind it
+  never ran; a re-run could not repair that, because Central refuses a second
+  deployment of the same version. The Maven step now skips a version already
+  on the repository and waits up to two hours. The gate's sweep of the tagged
+  commit grades only the newest run per workflow again (a first run cancelled
+  by its successor no longer makes a green commit unreleasable) while still
+  counting a cancelled run as red. The semver check covers the library crate
+  only: `cargo-semver-checks` errors on the CLI, a binary with no public API,
+  the moment it is on crates.io. Two `setup-go` pins named v6.0.0 beside a
+  v7.0.0 SHA.
+- **The Python CI tools come from the hash-locked requirements**, compiled
+  universally from 3.9 up; the 3.9 job could not resolve a lock compiled by a
+  newer interpreter (`iniconfig` 2.3.0 requires 3.10).
+
+The packages are the same code as 0.1.0; this release exists so that the
+GitHub Release, its assets and its provenance are produced for the version
+on every registry.
+
 ## [0.1.0] - 2026-09-13
 
 ### Changed
@@ -112,5 +137,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Documentation: architecture, claim format, verdict, canonicalization,
   determinism and a cookbook under `docs/`.
 
-[Unreleased]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/wickra-lib/wickra-verify/releases/tag/v0.1.0
