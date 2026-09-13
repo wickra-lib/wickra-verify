@@ -1,6 +1,6 @@
 {
   "name": "wickra-verify-linux-arm64-gnu",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Native binding for wickra-verify (linux-arm64-gnu). Installed automatically as an optional dependency of wickra-verify on matching platforms.",
   "main": "wickra-verify.linux-arm64-gnu.node",
   "files": [

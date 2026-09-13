@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "wickra-verify"
-version = "0.1.1"
+version = "0.1.2"
 description = "Verify any backtest: recompute a claimed backtest report with the deterministic Wickra engine and confirm or refute it field by field."
 readme = "README.md"
 license = "MIT OR Apache-2.0"
