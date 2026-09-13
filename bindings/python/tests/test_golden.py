@@ -5,14 +5,14 @@ every binding). Each ``golden/claims/<name>.json`` is a ``Claim``; its expected
 ``Verdict`` is ``golden/expected/<name>.json``. Candle data referenced by
 ``files`` claims is loaded from ``golden/data/<SYMBOL>.csv``.
 
-The test skips cleanly when the fixtures are not present, so it is green before
-the golden phase lands and becomes active once it does.
+Plain functions with plain asserts, no test framework: the Python 3.9 CI row
+runs this module through ``run_without_pytest.py`` (pytest 9.x needs 3.10, and
+8.x is below the fix for GHSA-6w46-j5rx-g56g), and 3.10 and up run it under
+pytest, which collects plain ``test_*`` functions all the same.
 """
 
 import json
 from pathlib import Path
-
-import pytest
 
 from wickra_verify import Verifier
 
@@ -22,14 +22,12 @@ EXPECTED = GOLDEN / "expected"
 DATA = GOLDEN / "data"
 
 
-def _claim_files() -> list[Path]:
-    return sorted(CLAIMS.glob("*.json")) if CLAIMS.is_dir() else []
+def claim_files() -> list:
+    return sorted(CLAIMS.glob("*.json"))
 
 
-def _load_data() -> dict:
-    data: dict[str, list[dict]] = {}
-    if not DATA.is_dir():
-        return data
+def load_data() -> dict:
+    data = {}
     for csv in sorted(DATA.glob("*.csv")):
         candles = []
         for idx, line in enumerate(csv.read_text().splitlines()):
@@ -57,20 +55,15 @@ def _load_data() -> dict:
     return data
 
 
-@pytest.mark.parametrize("claim_path", _claim_files(), ids=lambda p: p.stem)
-def test_golden_claim_matches_expected(claim_path: Path) -> None:
-    claim = json.loads(claim_path.read_text())
-    expected = json.loads((EXPECTED / claim_path.name).read_text())
-
-    envelope: dict = {"cmd": "verify", "claim": claim}
-    data = _load_data()
-    if data:
-        envelope["data"] = data
-
-    verdict = json.loads(Verifier().command(json.dumps(envelope)))
-    assert verdict == expected
+def test_golden_fixtures_are_present() -> None:
+    assert claim_files(), "golden/claims holds at least one claim"
+    assert load_data(), "golden/data holds at least one series"
 
 
-def test_golden_fixtures_present_or_skipped() -> None:
-    if not _claim_files():
-        pytest.skip("golden fixtures not present yet")
+def test_golden_claims_match_expected() -> None:
+    data = load_data()
+    for claim_path in claim_files():
+        claim = json.loads(claim_path.read_text())
+        expected = json.loads((EXPECTED / claim_path.name).read_text())
+        verdict = json.loads(Verifier().command(json.dumps({"cmd": "verify", "claim": claim, "data": data})))
+        assert verdict == expected, claim_path.name
