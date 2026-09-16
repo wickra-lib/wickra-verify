@@ -8,6 +8,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **wickra-backtest-core 0.1.6.** The pin moves from `=0.1.4` to the release
+  the family is on, in the workspace and in `fuzz/Cargo.toml`; the lock
+  follows. A cross-repo scan lined the 24 wickra-lib repositories up, and the
+  rest is what this one spelled differently: the C example's
+  `CMAKE_CXX_STANDARD` 14 where the family builds with 17, the fuzz job on a
+  rolling nightly rather than the family's pinned `nightly-2026-07-01`, and the
+  example job's `dotnet-version`, which now reads `8.0.x`.
+
+### Changed
+
 - **The Python 3.9 CI row installs no pytest.** pytest 9.x requires 3.10, so
   the 3.9 row could only pin 8.4.2, which is below the fix for
   GHSA-6w46-j5rx-g56g and has no backport. The dev requirements are locked
