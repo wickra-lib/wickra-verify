@@ -28,10 +28,14 @@
 get a deterministic verdict — confirmed or refuted — that anyone can recompute in
 ten languages.**
 
+> **▶ Live demos:** the backtester compiled to WebAssembly, an equity curve building bar by bar — **[backtest-live.wickra.org](https://backtest-live.wickra.org)**;
+> one StrategySpec side by side in Python, Rust, JS and Go — **[playground.wickra.org](https://playground.wickra.org)**;
+> all 514 indicators of the core over a real Binance feed — **[live.wickra.org](https://live.wickra.org)**. Zero backend, all of them.
+
 **Part of the [Wickra ecosystem](https://github.com/wickra-lib).** Built on the
-> same deterministic backtest engine and ten-language binding surface as
-> [wickra-backtest](https://github.com/wickra-lib/wickra-backtest),
-> [wickra-proof](https://github.com/wickra-lib/wickra-proof) and the rest.
+same deterministic backtest engine and ten-language binding surface as
+[wickra-backtest](https://github.com/wickra-lib/wickra-backtest),
+[wickra-proof](https://github.com/wickra-lib/wickra-proof) and the rest.
 
 `wickra-verify` takes a **claim** — a strategy spec, the candle data it was run
 over, and the `BacktestReport` someone says that run produced — and **recomputes
