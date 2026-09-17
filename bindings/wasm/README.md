@@ -44,7 +44,7 @@ Everything goes through a `Verifier` driven by JSON commands — the same comman
 protocol every Wickra binding shares.
 
 ```js
-import init, { Verifier } from "./pkg/wickra_verify_wasm.js";
+import init, { Verifier } from "wickra-verify-wasm";
 
 await init(); // load the .wasm module (web target)
 
