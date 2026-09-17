@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://wickra.org"><img src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/wickra-banner.webp?v=514" alt="Wickra Verify — deterministically confirm or refute a claimed backtest report against its strategy and data, in ten languages" width="100%"></a>
+  <a href="https://wickra.org"><img src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/wickra-banner.webp?v=514-7" alt="Wickra Verify — deterministically confirm or refute a claimed backtest report against its strategy and data, in ten languages" width="100%"></a>
 </p>
 
 [![Built on Wickra](https://img.shields.io/badge/built%20on-wickra-3b82f6)](https://github.com/wickra-lib/wickra)
@@ -19,21 +19,23 @@
 [![OpenSSF Scorecard](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/scorecard.svg)](https://scorecard.dev/viewer/?uri=github.com/wickra-lib/wickra-verify)
 [![OpenSSF Best Practices](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/best-practices.svg)](https://www.bestpractices.dev)
 [![Build provenance](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/provenance.svg)](https://github.com/wickra-lib/wickra-verify/attestations)
-[![Docs](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/docs.svg)](https://wickra.org)
+[![Docs](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/docs.svg)](https://verify.wickra.org)
 [![Verified across 10 languages](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-verify/verified.svg)](golden/)
 
 ---
-
-# Wickra Verify
 
 **Verify any backtest. Hand over a `(strategy, data, claimed report)` triple and
 get a deterministic verdict — confirmed or refuted — that anyone can recompute in
 ten languages.**
 
-> **Part of the [Wickra ecosystem](https://github.com/wickra-lib).** Built on the
-> same deterministic backtest engine and ten-language binding surface as
-> [wickra-backtest](https://github.com/wickra-lib/wickra-backtest),
-> [wickra-proof](https://github.com/wickra-lib/wickra-proof) and the rest.
+> **▶ Live demos:** the backtester compiled to WebAssembly, an equity curve building bar by bar — **[backtest-live.wickra.org](https://backtest-live.wickra.org)**;
+> one StrategySpec side by side in Python, Rust, JS and Go — **[playground.wickra.org](https://playground.wickra.org)**;
+> all 514 indicators of the core over a real Binance feed — **[live.wickra.org](https://live.wickra.org)**. Zero backend, all of them.
+
+**Part of the [Wickra ecosystem](https://github.com/wickra-lib).** Built on the
+same deterministic backtest engine and ten-language binding surface as
+[wickra-backtest](https://github.com/wickra-lib/wickra-backtest),
+[wickra-proof](https://github.com/wickra-lib/wickra-proof) and the rest.
 
 `wickra-verify` takes a **claim** — a strategy spec, the candle data it was run
 over, and the `BacktestReport` someone says that run produced — and **recomputes
@@ -74,6 +76,27 @@ cargo run -p wickra-verify -- \
   --data examples/data/candles
 ```
 
+## Status
+
+**0.1.2 — the current release.** The core, the CLI, all ten language bindings,
+the byte-exact golden corpus, the property + fuzz suites, the benchmarks and one
+runnable example per language are built and green across Linux, macOS and
+Windows. Packages are not yet on the registries. Track progress in
+[ROADMAP.md](ROADMAP.md).
+
+## Documentation
+
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how the pieces fit together.
+- [`docs/CLAIM_FORMAT.md`](docs/CLAIM_FORMAT.md) — the `Claim` and its embedded
+  `StrategySpec` / `BacktestReport`.
+- [`docs/VERDICT.md`](docs/VERDICT.md) — the `Verdict`, mismatches and tolerance.
+- [`docs/CANONICALIZATION.md`](docs/CANONICALIZATION.md) — the hashing contract
+  shared with wickra-proof.
+- [`docs/DETERMINISM.md`](docs/DETERMINISM.md) — why the verdict is identical
+  everywhere.
+- [`docs/Cookbook.md`](docs/Cookbook.md) — recipes, including "gate a claim in
+  CI: exit 2 = fraud".
+
 ## Determinism is the product
 
 - **Recompute, never trust** — the verdict comes from re-running the backtest,
@@ -88,27 +111,6 @@ cargo run -p wickra-verify -- \
   report, the recomputed report and the full inputs, under the same
   canonicalization [`wickra-proof`](https://github.com/wickra-lib/wickra-proof)
   uses; a verdict's `inputs_hash` equals the proof hash of the same inputs.
-
-## Status
-
-**Pre-release — functionally complete, CI-verified, not yet published.** The
-core, the CLI, all ten language bindings, the byte-exact golden corpus, the
-property + fuzz suites, the benchmarks and one runnable example per language are
-built and green across Linux, macOS and Windows. Packages are not yet on the
-registries. Track progress in [ROADMAP.md](ROADMAP.md).
-
-## Documentation
-
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how the pieces fit together.
-- [`docs/CLAIM_FORMAT.md`](docs/CLAIM_FORMAT.md) — the `Claim` and its embedded
-  `StrategySpec` / `BacktestReport`.
-- [`docs/VERDICT.md`](docs/VERDICT.md) — the `Verdict`, mismatches and tolerance.
-- [`docs/CANONICALIZATION.md`](docs/CANONICALIZATION.md) — the hashing contract
-  shared with wickra-proof.
-- [`docs/DETERMINISM.md`](docs/DETERMINISM.md) — why the verdict is identical
-  everywhere.
-- [`docs/Cookbook.md`](docs/Cookbook.md) — recipes, including "gate a claim in
-  CI: exit 2 = fraud".
 
 ## Quickstart
 
@@ -301,8 +303,20 @@ Report vulnerabilities per [SECURITY.md](SECURITY.md). The threat model is in
 
 ## License
 
-Dual-licensed under either [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE), at
-your option.
+Licensed under either of
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
+  <http://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
+
+at your option. Use it, fork it, modify it, redistribute it — commercially or
+not — file issues, send pull requests; all welcome.
+
+### Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
+dual licensed as above, without any additional terms or conditions.
 
 ## Disclaimer
 

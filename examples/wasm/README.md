@@ -1,40 +1,44 @@
-# Wickra Verify — browser demo
+# Wickra Verify WASM examples
 
-A tiny static page that runs the verifier in your browser via WebAssembly: paste
-a claim, press **Verify**, and see it confirmed or refuted. The deterministic
-Wickra engine recomputes the report from the strategy and data, so a doctored
-`claimed_report` cannot pass.
+Browser demos for the [Wickra Verify WASM binding](../../bindings/wasm): an HTML page whose module script
+loads the package the same way (`init()`, then construct), builds the same
+object every other binding builds and prints the same output into the page, so
+the pattern transfers one-to-one to your own page.
 
-**Static only — no server, no upload, no build backend.** Everything runs
-locally in your browser; nothing you type leaves the page. There is no network
-request to any API.
+## Build
 
-## Build and run
+The WASM module ships as a `wasm-pack` `--target web` bundle. Build it once from
+the repository root:
 
-Build the WebAssembly package into this directory, then serve the folder over
-HTTP (browsers refuse to load ES modules from `file://`):
-
-```sh
-# 1. Build the wasm package (once; requires wasm-pack)
-( cd bindings/wasm && wasm-pack build --target web --out-dir ../../examples/wasm/pkg )
-
-# 2. Serve this directory with any static file server, e.g.
-python -m http.server -d examples/wasm
-#    then open http://localhost:8000
+```bash
+wasm-pack build bindings/wasm --target web
 ```
 
-The generated `pkg/` directory is a build artifact and is not committed.
+## Serve
 
-## What it shows
+ES modules and `fetch()` both need a real HTTP origin, not `file://`. Any static
+server from the repository root works:
 
-The page loads with an example claim whose `fees_paid` has been inflated to
-`99999.0`. Pressing **Verify** returns a `Verdict` with `matches: false` and the
-`fees_paid` mismatch — the tamper is caught. Correct that number (or change any
-field of the strategy, data, or report) and verify again to watch the verdict
-move. A malformed claim surfaces an in-band `{ok:false,error:...}` message.
+```bash
+# Python:
+python -m http.server 8000
 
-## Files
+# Or Node:
+npx http-server -p 8000
+```
 
-- `index.html` — the page and styling.
-- `app.js` — loads the wasm verifier, prefills the example claim, and wires the
-  **Verify** button to `Verifier.command({cmd:"verify", claim})`.
+Then open the demo at `http://localhost:8000/examples/wasm/<file>`. CI cannot open
+a browser; it extracts the `<script type="module">` and parses it with
+`node --check`, so a broken edit fails there rather than in a reader's tab.
+
+## Demos
+
+| Demo | What it shows |
+|------|---------------|
+| `app.js` | Browser demo wiring: load the wasm verifier, prefill an example claim, and verify it on demand — all client-side. |
+| `index.html` | A runnable example against this binding. |
+
+## See also
+
+- [`bindings/wasm/README.md`](../../bindings/wasm/README.md) — install, quick start and the API of the package.
+- [`examples/README.md`](../README.md) — the same example in every other language.
