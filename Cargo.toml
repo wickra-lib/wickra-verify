@@ -57,7 +57,7 @@ categories = ["finance", "command-line-utilities"]
 # the CLI reads its own CSV, and `Candle` comes from the engine, so adding the
 # dependency back would mean two crates defining the same row. wickra-proof and
 # wickra-strategy-ci reached the same conclusion.
-wickra-backtest-core = "=0.1.6"
+wickra-backtest-core = "=0.1.7"
 # Workspace-internal crate, referenced by the CLI, bench and bindings.
 wickra-verify-core = { version = "0.1.3", path = "crates/wickra-verify-core" }
 # Serialization — the data-driven boundary (claim/verdict/report/command as JSON).
