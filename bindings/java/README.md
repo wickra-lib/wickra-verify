@@ -32,14 +32,14 @@ Maven:
 <dependency>
   <groupId>org.wickra</groupId>
   <artifactId>wickra-verify</artifactId>
-  <version>0.1.2</version>
+  <version>0.1.3</version>
 </dependency>
 ```
 
 Gradle:
 
 ```kotlin
-implementation("org.wickra:wickra-verify:0.1.2")
+implementation("org.wickra:wickra-verify:0.1.3")
 ```
 
 The native library ships prebuilt per platform inside the jar and is
