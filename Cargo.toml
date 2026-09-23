@@ -29,7 +29,7 @@ members = [
 exclude = ["fuzz"]
 
 [workspace.package]
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 rust-version = "1.86"
 license = "MIT OR Apache-2.0"
@@ -59,7 +59,7 @@ categories = ["finance", "command-line-utilities"]
 # wickra-strategy-ci reached the same conclusion.
 wickra-backtest-core = "=0.1.7"
 # Workspace-internal crate, referenced by the CLI, bench and bindings.
-wickra-verify-core = { version = "0.1.3", path = "crates/wickra-verify-core" }
+wickra-verify-core = { version = "0.1.4", path = "crates/wickra-verify-core" }
 # Serialization — the data-driven boundary (claim/verdict/report/command as JSON).
 serde = { version = "1", features = ["derive"] }
 # `float_roundtrip` makes serde_json's float parser correctly rounded: a float
