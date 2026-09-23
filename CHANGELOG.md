@@ -21,12 +21,17 @@ the refreshed dependency tree and toolchain pins.
 
 ### Changed
 
-- **Built on wickra-core 1.0.5.** The lock takes the indicator core's latest
+- **Built on wickra-core 1.0.6.** The lock takes the indicator core's latest
   release, reached through `wickra-backtest`; nothing here names it.
-- **Third-party dependencies refreshed.** `Cargo.lock` takes 32 crates to their
+- **The family pins follow the owners' releases.** `wickra-backtest-core` =0.1.7
+  -> =0.1.8 -- the exact pins this repository keeps on its siblings move to the
+  versions those repositories release in the same train, and every tracked
+  lockfile follows. The golden verdicts are re-blessed: only the recorded engine
+  version and inputs hash move; every report hash is unchanged.
+- **Third-party dependencies refreshed.** `Cargo.lock` takes 33 crates to their
   newest versions compatible with the Rust floor (the lock now resolves
   MSRV-aware, see below), run across the family in one pass so every repository
-  resolves the same day's versions. No manifest changed.
+  resolves the same day's versions. The refresh itself changes no manifest.
 - **The lockfile resolves for the Rust floor.** `.cargo/config.toml` sets
   `incompatible-rust-versions = "fallback"`, so `cargo update` takes the newest
   version the workspace's `rust-version` can build rather than the newest
