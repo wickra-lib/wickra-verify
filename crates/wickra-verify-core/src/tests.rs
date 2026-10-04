@@ -118,7 +118,7 @@ fn honest_claim_verifies_true() {
     let claim = claim_with(honest_report());
     let verdict = verify(&claim, &data()).unwrap();
     assert!(verdict.matches);
-    assert!(verdict.mismatches.is_empty());
+    assert_eq!(verdict.mismatches, Vec::new());
     assert_eq!(verdict.engine_version, wickra_backtest_core::version());
     assert_eq!(verdict.claimed_report_hash.len(), 64);
     assert_eq!(verdict.inputs_hash.len(), 64);
@@ -227,7 +227,7 @@ fn inline_data_helper_distinguishes_ref_kinds() {
 #[test]
 fn compare_is_empty_for_identical_reports() {
     let r = honest_report();
-    assert!(compare(&r, &r, 1e-9, 1e-6).is_empty());
+    assert_eq!(compare(&r, &r, 1e-9, 1e-6), Vec::new());
 }
 
 #[test]
