@@ -18,6 +18,8 @@ A follow-up release on the wickra 2.0 family.
   `fuzz/`); every tracked lockfile follows. Indicators the audit corrected
   return the values of their published definitions; wickra's changelog lists
   them, with the warmup changes and the new defaults.
+- **The golden verdicts are re-blessed.** Only the recorded engine version and
+  inputs hash move; every report hash is unchanged.
 
 ## [0.1.5] - 2026-09-27
 
