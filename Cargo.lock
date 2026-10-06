@@ -1321,7 +1321,7 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 
 [[package]]
 name = "verify-bench"
-version = "0.1.5"
+version = "0.2.0"
 dependencies = [
  "codspeed-criterion-compat",
  "serde_json",
@@ -1414,9 +1414,9 @@ dependencies = [
 
 [[package]]
 name = "wickra-backtest-core"
-version = "0.1.9"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "436b31028d78e0db12ecb4030339fe4301e4abc0b12439b194d2b955a5eed15d"
+checksum = "cbf78d1ea52fd4cf4bcea242de9c1e5aac2c3a7c9154cdec660f037b3e322fc5"
 dependencies = [
  "schemars",
  "serde",
@@ -1427,9 +1427,9 @@ dependencies = [
 
 [[package]]
 name = "wickra-core"
-version = "1.0.7"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9de44a7d1a465021f41c4a182463493a4c1053efbbfdde8fa6a3fcbd6dcc4d62"
+checksum = "b62035347edf307f399651a8b5b28b3883fdc17b891605fd92d95cc4b2e1f749"
 dependencies = [
  "rayon",
  "thiserror",
@@ -1438,20 +1438,20 @@ dependencies = [
 
 [[package]]
 name = "wickra-simd"
-version = "1.0.7"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80fc26f4f971339fd785bb1445229f90699c9b954c16202f3a63ee9b9e2f2114"
+checksum = "dd924c51e4871af15651e173fd4d88269455e0b3e9524aa3f24ed72a16bf40e6"
 
 [[package]]
 name = "wickra-verify-c"
-version = "0.1.5"
+version = "0.2.0"
 dependencies = [
  "wickra-verify-core",
 ]
 
 [[package]]
 name = "wickra-verify-cli"
-version = "0.1.5"
+version = "0.2.0"
 dependencies = [
  "clap",
  "serde_json",
@@ -1460,7 +1460,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-core"
-version = "0.1.5"
+version = "0.2.0"
 dependencies = [
  "blake3",
  "proptest",
@@ -1473,7 +1473,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-example"
-version = "0.1.5"
+version = "0.2.0"
 dependencies = [
  "serde_json",
  "wickra-backtest-core",
@@ -1482,7 +1482,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-node"
-version = "0.1.5"
+version = "0.2.0"
 dependencies = [
  "napi",
  "napi-build",
@@ -1492,7 +1492,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-python"
-version = "0.1.5"
+version = "0.2.0"
 dependencies = [
  "pyo3",
  "wickra-verify-core",
@@ -1500,7 +1500,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-wasm"
-version = "0.1.5"
+version = "0.2.0"
 dependencies = [
  "wasm-bindgen",
  "wickra-verify-core",
