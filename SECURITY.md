@@ -11,13 +11,13 @@ the asset and trust-boundary breakdown.
 ## Supported versions
 
 This project is pre-1.0 (alpha). Security fixes are applied to the latest
-released version, `0.1.5`, only; please upgrade to the newest release before
+released version, `0.2.0`, only; please upgrade to the newest release before
 reporting an issue.
 
 | Version | Supported |
 |---------|-----------|
-| 0.1.5 (latest) | ✅ |
-| < 0.1.5 | ❌ |
+| 0.2.0 (latest) | ✅ |
+| < 0.2.0 | ❌ |
 
 ## Reporting a vulnerability
 

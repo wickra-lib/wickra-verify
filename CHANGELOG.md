@@ -6,6 +6,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-06
+
+A follow-up release on the wickra 2.0 family.
+
+### Changed
+
+- **Built on wickra 2.0 and wickra-backtest 0.2.0.** `wickra-core` 2.0, the
+  formula-audit release of the indicator core, arrives through wickra-backtest;
+  the exact pin on `wickra-backtest-core` moves from =0.1.9 to =0.2.0 (root and
+  `fuzz/`); every tracked lockfile follows. Indicators the audit corrected
+  return the values of their published definitions; wickra's changelog lists
+  them, with the warmup changes and the new defaults.
+- **The golden verdicts are re-blessed.** Only the recorded engine version and
+  inputs hash move; every report hash is unchanged.
+
 ## [0.1.5] - 2026-09-27
 
 A follow-up release: the verifier and its bindings are unchanged. It pins
@@ -284,7 +299,8 @@ on every registry.
 - Documentation: architecture, claim format, verdict, canonicalization,
   determinism and a cookbook under `docs/`.
 
-[Unreleased]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/wickra-lib/wickra-verify/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.5...v0.2.0
 [0.1.5]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.2...v0.1.3
