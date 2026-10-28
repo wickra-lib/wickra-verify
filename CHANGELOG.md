@@ -12,6 +12,15 @@ A maintenance release: the verifier and its verdicts are unchanged.
 
 ### Changed
 
+- **Built on wickra-core 2.1.0.** The lock takes the indicator core's minor
+  release, reached through the family crates; the `2.0` requirement already
+  admitted it. It adds `RunningDrawdown` and updates `MaxDrawdown` in amortised
+  O(1) with the same values; nothing here computes differently.
+- **The family pins follow the owners' releases.** `wickra-backtest-core` =0.2.0
+  -> =0.2.1 -- the exact pins this repository keeps on its siblings move to the
+  versions those repositories release in the same train, and every tracked
+  lockfile follows. The golden verdicts are re-blessed: only the recorded engine
+  version and inputs hash move; every report hash is unchanged.
 - **uv 0.13.5** for the lockfile bootstrap in `scripts/update-lockfiles.sh`.
 - **The ecosystem list quotes the backtest registry's count** (495) for the
   products that resolve indicators through it, rather than the core's 514.
