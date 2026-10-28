@@ -16,6 +16,14 @@ A maintenance release: the verifier and its verdicts are unchanged.
 - **The ecosystem list quotes the backtest registry's count** (495) for the
   products that resolve indicators through it, rather than the core's 514.
 
+### Fixed
+
+- **`central-publishing-maven-plugin` 0.12.0** for the Java binding. Since
+  early October the GitHub runners carry Maven 3.10.0, which writes
+  `maven-metadata-local.xml` and `_remote.repositories` into the staging
+  directory; 0.11.0 bundles them, and Central rejects the deployment with
+  "Bundle has content that does NOT have a .pom file".
+
 ## [0.2.0] - 2026-10-06
 
 A follow-up release on the wickra 2.0 family.
