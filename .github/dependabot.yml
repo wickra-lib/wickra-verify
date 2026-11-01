@@ -132,7 +132,11 @@ updates:
     directory: "/fuzz"
     schedule:
       interval: monthly
+      time: "06:00"
+      timezone: "Etc/UTC"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "deps(cargo)"
     groups:
@@ -145,7 +149,11 @@ updates:
     directory: "/examples/node"
     schedule:
       interval: monthly
+      time: "06:00"
+      timezone: "Etc/UTC"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "deps(npm)"
     groups:
@@ -157,7 +165,11 @@ updates:
     directory: "/examples/go"
     schedule:
       interval: monthly
+      time: "06:00"
+      timezone: "Etc/UTC"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "deps(gomod)"
     groups:
@@ -170,7 +182,18 @@ updates:
     directory: "/.github/requirements"
     schedule:
       interval: monthly
-    open-pull-requests-limit: 5
+      time: "06:00"
+      timezone: "Etc/UTC"
+    # Version-update pull requests disabled (0), as across the family.
+    # Dependabot edits the .txt directly and does not know which interpreter
+    # each lock was resolved against, so a bump lands a version the row cannot
+    # install: it resolves on Linux (dropping Windows-only dependencies such as
+    # pytest's colorama) and would move ci-dev-py39.txt past what 3.9 installs.
+    # Regenerate with scripts/update-lockfiles.sh instead. Security updates are
+    # exempt from this limit and still arrive.
+    open-pull-requests-limit: 0
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "deps(pip)"
     groups:
