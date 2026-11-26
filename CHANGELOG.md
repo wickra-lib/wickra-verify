@@ -6,6 +6,48 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-11-26
+
+A maintenance release: it follows wickra-core 2.2.0, builds on Rust 1.100 and
+Go 1.27, and ships the refreshed dependency tree.
+
+### Changed
+
+- **Built on wickra-core 2.2.0** (from 2.1.0). The lock takes the indicator
+  core's release; the caret requirement already admitted it. Saturated `Rsi` and
+  `StochRsi` values are now exactly 100 (and 0), and `TtmSqueeze` detrends its
+  momentum per bar, as the reference does, with a warmup of `2 * period - 1`;
+  anything here that runs those indicators can report different values with it.
+- **The family pins follow the owners' releases.** `wickra-backtest-core` =0.2.1
+  -> =0.2.2 -- the exact pins this repository keeps on its siblings move to the
+  versions those repositories release in the same train, and every tracked
+  lockfile follows. The golden verdicts are re-blessed: only the recorded engine
+  version and inputs hash move; every report hash is unchanged.
+- **Third-party dependencies refreshed.** `Cargo.lock` takes 68 crates at their
+  latest releases within the declared ranges. The npm and Python dev locks are
+  re-resolved the same way. The refresh itself changes no manifest.
+- **Dependabot's monthly updates** (GitHub Actions, Cargo, Maven, npm, NuGet): 7
+  pull requests, each checked against the versions the rest of the family holds.
+- **CI and release workflow:** point osv-scanner at the Python lockfiles it was
+  silently skipping; install the Node binding with npm ci now that the lock
+  names every platform package; run every entry on the family's schedule and
+  cooldown; use setup-java's *-env-var inputs.
+
+### Fixed
+
+- **Builds on Rust 1.100.** Its `clippy::used_underscore_items` fires on the
+  code `#[pymodule]` generates for an underscore-named module function. The
+  function has a plain name now and `#[pyo3(name = "_...")]` keeps the extension
+  module's import name unchanged.
+- **The Go binding links on Windows with Go 1.27,** which rejects
+  `-l:<name>.dll` in `#cgo LDFLAGS` as an invalid flag. It is `-l<name>` now;
+  the MinGW linker resolves that to the same DLL.
+
+### Security
+
+- **rustix 1.1.6** in the lockfile, for RUSTSEC-2026-0486: xattr functions
+  marked unwritten bytes as initialised when given a zero-length buffer.
+
 ## [0.2.1] - 2026-10-28
 
 A maintenance release: the verifier and its verdicts are unchanged.
@@ -326,7 +368,8 @@ on every registry.
 - Documentation: architecture, claim format, verdict, canonicalization,
   determinism and a cookbook under `docs/`.
 
-[Unreleased]: https://github.com/wickra-lib/wickra-verify/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/wickra-lib/wickra-verify/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/wickra-lib/wickra-verify/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/wickra-lib/wickra-verify/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.5...v0.2.0
 [0.1.5]: https://github.com/wickra-lib/wickra-verify/compare/v0.1.4...v0.1.5
