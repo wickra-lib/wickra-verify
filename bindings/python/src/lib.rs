@@ -50,7 +50,8 @@ impl PyVerifier {
 
 /// The native module (`wickra_verify._wickra_verify`).
 #[pymodule]
-fn _wickra_verify(module: &Bound<'_, PyModule>) -> PyResult<()> {
+#[pyo3(name = "_wickra_verify")]
+fn wickra_verify_extension(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add("__version__", env!("CARGO_PKG_VERSION"))?;
     module.add_class::<PyVerifier>()?;
     Ok(())
