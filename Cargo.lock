@@ -1330,7 +1330,7 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 
 [[package]]
 name = "verify-bench"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "codspeed-criterion-compat",
  "serde_json",
@@ -1452,14 +1452,14 @@ checksum = "b76d2ecef2a65e6ab8179f989d609400bc066e92c7d84a9ec7960d2a8cf79b2b"
 
 [[package]]
 name = "wickra-verify-c"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "wickra-verify-core",
 ]
 
 [[package]]
 name = "wickra-verify-cli"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "clap",
  "serde_json",
@@ -1468,7 +1468,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-core"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "blake3",
  "proptest",
@@ -1481,7 +1481,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-example"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "serde_json",
  "wickra-backtest-core",
@@ -1490,7 +1490,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-node"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "napi",
  "napi-build",
@@ -1500,7 +1500,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-python"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "pyo3",
  "wickra-verify-core",
@@ -1508,7 +1508,7 @@ dependencies = [
 
 [[package]]
 name = "wickra-verify-wasm"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "wasm-bindgen",
  "wickra-verify-core",
